@@ -1,164 +1,1690 @@
 
-# Module 1 Final Project
+## Final Project Submission
+
+Please fill out:
+* Student name: 
+* Student pace: self paced / part time / full time
+* Scheduled project review date/time: 
+* Instructor name: 
+* Blog post URL:
 
 
-## Introduction
 
-In this lesson, we'll review all of the guidelines and specifications for the final project for Module 1.
+```python
+import numpy as np
+import pandas as pd
 
-## Objectives
-You will be able to:
-* Describe all required aspects of the final project for Module 1
-* Describe all required deliverables
-* Describe what constitutes a successful project
-* Describe what the experience of the project review should be like
+import scipy.stats as scs
 
-## Final Project Summary
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
 
-You've made it all the way through the first module of this course - take a minute to celebrate your awesomeness!
+### Osemn process
 
-![awesome](https://raw.githubusercontent.com/learn-co-curriculum/dsc-v2-mod1-final-project/master/awesome.gif)
+![](osemn.png)
 
-All that remains in Module 1 is to put our newfound data science skills to use with a final project! You should expect this project to take between 20 and 25 hours of solid, focused effort. If you're done way quicker, go back and dig in deeper or try some of the optional "level up" suggestions. If you're worried that you're going to get to 30 hrs and still not even have the data imported, reach out to an instructor in Slack ASAP to get some help!
-
-## The Dataset
-
-For this project, you'll be working with the King County House Sales dataset. We've modified the dataset to make it a bit more fun and challenging.  The dataset can be found in the file `"kc_house_data.csv"`, in this repo.
-
-The description of the column names can be found in the column_names.md file in this repository. As with most real world data sets, the column names are not perfectly described, so you'll have to do some research or use your best judgment if you have questions relating to what the data means.
-
-You'll clean, explore, and model this dataset with a multivariate linear regression to predict the sale price of houses as accurately as possible.
-
-## The Deliverables
-
-For online students, there will be five deliverables for this project (Note: On-campus students may have different requirements, please speak with your instructor):
-
-1. A well documented **Jupyter Notebook** containing any code you've written for this project and comments explaining it. This work will need to be pushed to your GitHub repository in order to submit your project.  
-2. An organized **README.md** file in the GitHub repository that describes the contents of the repository. This file should be the source of information for navigating through the repository.
-3. A short **Keynote/PowerPoint/Google Slides presentation** (delivered as a PDF export) giving a high-level overview of your methodology and recommendations for non-technical stakeholders. Make sure to also add and commit this pdf of your non-technical presentation to your repository with a file name of presentation.pdf.
-4. **[A Blog Post](https://github.com/learn-co-curriculum/dsc-welcome-blogging)**	
-5. A **Video Walkthrough** of your non-technical presentation. Some common video recording tools used are Zoom, Quicktime, and Nimbus. After you record your presentation, publish it on a service like YouTube or Google Drive, you will need a link to the video to submit your project.
-
-Note: On-campus students may have different requirements, please speak with your instructor.
-
-### Jupyter Notebook Must-Haves
-
-For this project, your Jupyter Notebook should meet the following specifications:
-
-#### Organization/Code Cleanliness
-
-* The notebook should be well organized, easy to follow,  and code should be commented where appropriate.  
-    * Level Up: The notebook contains well-formatted, professional looking markdown cells explaining any substantial code.  All functions have docstrings that act as professional-quality documentation
-* The notebook is written for technical audiences with a way to both understand your approach and reproduce your results. The target audience for this deliverable is other data scientists looking to validate your findings.
-
-#### Visualizations & EDA
-
-* Your project contains at least 4 meaningful data visualizations, with corresponding interpretations. All visualizations are well labeled with axes labels, a title, and a legend (when appropriate)  
-* You pose at least 3 meaningful questions and answer them through EDA.  These questions should be well labeled and easy to identify inside the notebook.
-    * **Level Up**: Each question is clearly answered with a visualization that makes the answer easy to understand.   
-* Your notebook should contain 1 - 2 paragraphs briefly explaining your approach to this project.
-
-#### Model Quality/Approach
-
-* Your model should not include any predictors with p-values greater than .05.  
-* Your notebook shows an iterative approach to modeling, and details the parameters and results of the model at each iteration.  
-    * **Level Up**: Whenever necessary, you briefly explain the changes made from one iteration to the next, and why you made these choices.  
-* You provide at least 1 paragraph explaining your final model.   
-* You pick at least 3 coefficients from your final model and explain their impact on the price of a house in this dataset.   
+### Custom functions
 
 
-### Non-Technical Presentation Must-Haves
+```python
+# data conditioning function
 
-Another deliverable should be a Keynote, PowerPoint or Google Slides presentation delivered as a pdf file in your fork of this repository with the file name of `presentation.pdf` detailing the results of your project.  Your target audience is non-technical people interested in using your findings to maximize their profit when selling their home.
+def check_only_one_floor(val):
+    if val == 1:
+        return 1
+    return 0
+```
 
-Your presentation should:
-
-* Contain between 5 - 10 professional-quality slides.  
-    * **Level Up**: The slides should use visualizations whenever possible, and avoid walls of text.
-* Take no more than 5 minutes to present.   
-* Avoid technical jargon and explain the results in a clear, actionable way for non-technical audiences.   
-
-**_Based on the results of your models, your presentation should discuss at least two concrete features that highly influence housing prices._**
-
-### Blog Post Must-Haves
-
-Refer back to the [Blogging Guidelines](https://github.com/learn-co-curriculum/dsc-welcome-blogging) for the technical requirements and blog ideas.
+### Gather Data
 
 
-## The Process 
-(Note: On-campus students may have different processes, please speak with your instructor)
-
-### 1. Getting Started
-
-Please start by reviewing this document. If you have any questions, please ask them in Slack ASAP so (a) we can answer the questions and (b) so we can update this repository to make it clearer.
-
-Be sure to let the instructor team know when you’ve started working on a project, either by reaching out over Slack or, if you are in a full-time or part-time cohort, by connecting with your Cohort Lead in your weekly 1:1. If you’re not sure who to reach out to, post in the #online-ds-sp-000 channel in Slack.
-
-Once you're done with the first 8 sections, please start on the project. Do that by forking this repository, cloning it locally, and working in the student.ipynb file. Make sure to also add and commit a pdf of your presentation to the repository with a file name of `presentation.pdf`.
-
-### 2. The Project Review
-
-_Note: On-campus students may have different review processes, please speak with your instructor._
-
-> **When you start on the project, please also reach out to an instructor immediately to schedule your project review** (if you're not sure who to schedule with, please ask in Slack!)
-
-#### What to expect from the Project Review
-
-Project reviews are focused on preparing you for technical interviews. Treat project reviews as if they were technical interviews, in both attitude and technical presentation *(sometimes technical interviews will feel arbitrary or unfair - if you want to get the job, commenting on that is seldom a good choice)*.
-
-The project review is comprised of a 45 minute 1:1 session with one of the instructors. During your project review, be prepared to:
-
-#### 1. Deliver your PDF presentation to a non-technical stakeholder.
-In this phase of the review (~10 mins) your instructor will play the part of a non-technical stakeholder that you are presenting your findings to. The presentation  should not exceed 5 minutes, giving the "stakeholder" 5 minutes to ask questions.
-
-In the first half of the presentation (2-3 mins), you should summarize your methodology in a way that will be comprehensible to someone with no background in data science and that will increase their confidence in you and your findings. In the second half (the remaining 2-3 mins) you should summarize your findings and be ready to answer a couple of non-technical questions from the audience. The questions might relate to technical topics (sampling bias, confidence, etc) but will be asked in a non-technical way and need to be answered in a way that does not assume a background in statistics or machine learning. You can assume a smart, business stakeholder, with a non-quantitative college degree.
-
-#### 2. Go through the Jupyter Notebook, answering questions about how you made certain decisions. Be ready to explain things like:
-    * "How did you pick the question(s) that you did?"
-    * "Why are these questions important from a business perspective?"
-    * "How did you decide on the data cleaning options you performed?"
-    * "Why did you choose a given method or library?"
-    * "Why did you select those visualizations and what did you learn from each of them?"
-    * "Why did you pick those features as predictors?"
-    * "How would you interpret the results?"
-    * "How confident are you in the predictive quality of the results?"
-    * "What are some of the things that could cause the results to be wrong?"
-
-Think of the first phase of the review (~30 mins) as a technical boss reviewing your work and asking questions about it before green-lighting you to present to the business team. You should practice using the appropriate technical vocabulary to explain yourself. Don't be surprised if the instructor jumps around or sometimes cuts you off - there is a lot of ground to cover, so that may happen.
-
-If any requirements are missing or if significant gaps in understanding are uncovered, be prepared to do one or all of the following:
-* Perform additional data cleanup, visualization, feature selection, modeling and/or model validation
-* Submit an improved version
-* Meet again for another Project Review
-
-What won't happen:
-* You won't be yelled at, belittled, or scolded
-* You won't be put on the spot without support
-* There's nothing you can do to instantly fail or blow it
-
-**Please note: We need to receive the URL of your repository at least 24 hours before and please have the project finished at least 3 hours before your review so we can look at your materials in advance.**
+```python
+df = pd.read_csv("kc_house_data.csv")
+```
 
 
-## Submitting your Project
-
- You’re almost done! In order to submit your project for review, include the following links to your work in the corresponding fields on the right-hand side of Learn.
-
- 1. **GitHub Repo:** Now that you’ve completed your project in Jupyter Notebooks, push your work to GitHub and paste that link to the right. (If you need help doing so, review the resources [here](https://docs.google.com/spreadsheets/d/1CNGDhjcQZDRx2sWByd2v-mgUOjy13Cd_hQYVXPuzEDE/edit#gid=0).)
-_Reminder: Make sure to also add and commit a pdf of your non-technical presentation to the repository with a file name of presentation.pdf._
-2. **Blog Post:** Include a link to your blog post.
-3. **Record Walkthrough:** Include a link to your video walkthrough.
-
- Hit "I'm done" to wrap it up. You will receive an email in order to schedule your review with your instructor.
- 
- 
-## Grading Rubric
-Online students can find a PDF of the grading rubric for the project [here](https://github.com/learn-co-curriculum/dsc-v2-mod1-final-project/blob/master/module1_project_rubric.pdf). On-campus students may have different review processes, please speak with your instructor.
+```python
+df.head()
+```
 
 
-## Summary
 
-The end of module projects and project reviews are a critical part of the program. They give you a chance to both bring together all the skills you've learned into realistic projects and to practice key "business judgement" and communication skills that you otherwise might not get as much practice with.
 
-The projects are serious and important. They are not graded, but they can be passed and they can be failed. Take the project seriously, put the time in, ask for help from your peers or instructors early and often if you need it, and treat the review as a job interview and you'll do great. We're rooting for you to succeed and we're only going to ask you to take a review again if we believe that you need to. We'll also provide open and honest feedback so you can improve as quickly and efficiently as possible.
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-Finally, this is your first project. We don't expect you to remember all of the terms or to get all of the answers right. If in doubt, be honest. If you don't know something, say so. If you can't remember it, just say so. It's very unusual for someone to complete a project review without being asked a question they're unsure of, we know you might be nervous which may affect your performance. Just be as honest, precise and focused as you can be, and you'll do great!
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>date</th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>...</th>
+      <th>grade</th>
+      <th>sqft_above</th>
+      <th>sqft_basement</th>
+      <th>yr_built</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>7129300520</td>
+      <td>10/13/2014</td>
+      <td>221900.0</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>1180</td>
+      <td>5650</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>7</td>
+      <td>1180</td>
+      <td>0.0</td>
+      <td>1955</td>
+      <td>0.0</td>
+      <td>98178</td>
+      <td>47.5112</td>
+      <td>-122.257</td>
+      <td>1340</td>
+      <td>5650</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>6414100192</td>
+      <td>12/9/2014</td>
+      <td>538000.0</td>
+      <td>3</td>
+      <td>2.25</td>
+      <td>2570</td>
+      <td>7242</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>7</td>
+      <td>2170</td>
+      <td>400.0</td>
+      <td>1951</td>
+      <td>1991.0</td>
+      <td>98125</td>
+      <td>47.7210</td>
+      <td>-122.319</td>
+      <td>1690</td>
+      <td>7639</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>5631500400</td>
+      <td>2/25/2015</td>
+      <td>180000.0</td>
+      <td>2</td>
+      <td>1.00</td>
+      <td>770</td>
+      <td>10000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>6</td>
+      <td>770</td>
+      <td>0.0</td>
+      <td>1933</td>
+      <td>NaN</td>
+      <td>98028</td>
+      <td>47.7379</td>
+      <td>-122.233</td>
+      <td>2720</td>
+      <td>8062</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2487200875</td>
+      <td>12/9/2014</td>
+      <td>604000.0</td>
+      <td>4</td>
+      <td>3.00</td>
+      <td>1960</td>
+      <td>5000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>7</td>
+      <td>1050</td>
+      <td>910.0</td>
+      <td>1965</td>
+      <td>0.0</td>
+      <td>98136</td>
+      <td>47.5208</td>
+      <td>-122.393</td>
+      <td>1360</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1954400510</td>
+      <td>2/18/2015</td>
+      <td>510000.0</td>
+      <td>3</td>
+      <td>2.00</td>
+      <td>1680</td>
+      <td>8080</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>8</td>
+      <td>1680</td>
+      <td>0.0</td>
+      <td>1987</td>
+      <td>0.0</td>
+      <td>98074</td>
+      <td>47.6168</td>
+      <td>-122.045</td>
+      <td>1800</td>
+      <td>7503</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 21 columns</p>
+</div>
+
+
+
+
+```python
+df.shape
+```
+
+
+
+
+    (21597, 20)
+
+
+
+
+```python
+df.info()
+# I see 2 object columns data and sqft_basement
+# there is an 'id' column, will probably drop this
+# object usually signifies a placeholder value of a string type or a dictionary type
+```
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 21597 entries, 0 to 21596
+    Data columns (total 21 columns):
+    id               21597 non-null int64
+    date             21597 non-null object
+    price            21597 non-null float64
+    bedrooms         21597 non-null int64
+    bathrooms        21597 non-null float64
+    sqft_living      21597 non-null int64
+    sqft_lot         21597 non-null int64
+    floors           21597 non-null float64
+    waterfront       19221 non-null float64
+    view             21534 non-null float64
+    condition        21597 non-null int64
+    grade            21597 non-null int64
+    sqft_above       21597 non-null int64
+    sqft_basement    21597 non-null object
+    yr_built         21597 non-null int64
+    yr_renovated     17755 non-null float64
+    zipcode          21597 non-null int64
+    lat              21597 non-null float64
+    long             21597 non-null float64
+    sqft_living15    21597 non-null int64
+    sqft_lot15       21597 non-null int64
+    dtypes: float64(8), int64(11), object(2)
+    memory usage: 3.5+ MB
+
+
+
+```python
+df.describe()
+
+# which columns were left out, the object columns
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>grade</th>
+      <th>sqft_above</th>
+      <th>yr_built</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>2.159700e+04</td>
+      <td>2.159700e+04</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>2.159700e+04</td>
+      <td>21597.000000</td>
+      <td>19221.000000</td>
+      <td>21534.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>17755.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>4.580474e+09</td>
+      <td>5.402966e+05</td>
+      <td>3.373200</td>
+      <td>2.115826</td>
+      <td>2080.321850</td>
+      <td>1.509941e+04</td>
+      <td>1.494096</td>
+      <td>0.007596</td>
+      <td>0.233863</td>
+      <td>3.409825</td>
+      <td>7.657915</td>
+      <td>1788.596842</td>
+      <td>1970.999676</td>
+      <td>83.636778</td>
+      <td>98077.951845</td>
+      <td>47.560093</td>
+      <td>-122.213982</td>
+      <td>1986.620318</td>
+      <td>12758.283512</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>2.876736e+09</td>
+      <td>3.673681e+05</td>
+      <td>0.926299</td>
+      <td>0.768984</td>
+      <td>918.106125</td>
+      <td>4.141264e+04</td>
+      <td>0.539683</td>
+      <td>0.086825</td>
+      <td>0.765686</td>
+      <td>0.650546</td>
+      <td>1.173200</td>
+      <td>827.759761</td>
+      <td>29.375234</td>
+      <td>399.946414</td>
+      <td>53.513072</td>
+      <td>0.138552</td>
+      <td>0.140724</td>
+      <td>685.230472</td>
+      <td>27274.441950</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>1.000102e+06</td>
+      <td>7.800000e+04</td>
+      <td>1.000000</td>
+      <td>0.500000</td>
+      <td>370.000000</td>
+      <td>5.200000e+02</td>
+      <td>1.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+      <td>3.000000</td>
+      <td>370.000000</td>
+      <td>1900.000000</td>
+      <td>0.000000</td>
+      <td>98001.000000</td>
+      <td>47.155900</td>
+      <td>-122.519000</td>
+      <td>399.000000</td>
+      <td>651.000000</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>2.123049e+09</td>
+      <td>3.220000e+05</td>
+      <td>3.000000</td>
+      <td>1.750000</td>
+      <td>1430.000000</td>
+      <td>5.040000e+03</td>
+      <td>1.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>3.000000</td>
+      <td>7.000000</td>
+      <td>1190.000000</td>
+      <td>1951.000000</td>
+      <td>0.000000</td>
+      <td>98033.000000</td>
+      <td>47.471100</td>
+      <td>-122.328000</td>
+      <td>1490.000000</td>
+      <td>5100.000000</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>3.904930e+09</td>
+      <td>4.500000e+05</td>
+      <td>3.000000</td>
+      <td>2.250000</td>
+      <td>1910.000000</td>
+      <td>7.618000e+03</td>
+      <td>1.500000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>3.000000</td>
+      <td>7.000000</td>
+      <td>1560.000000</td>
+      <td>1975.000000</td>
+      <td>0.000000</td>
+      <td>98065.000000</td>
+      <td>47.571800</td>
+      <td>-122.231000</td>
+      <td>1840.000000</td>
+      <td>7620.000000</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>7.308900e+09</td>
+      <td>6.450000e+05</td>
+      <td>4.000000</td>
+      <td>2.500000</td>
+      <td>2550.000000</td>
+      <td>1.068500e+04</td>
+      <td>2.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>4.000000</td>
+      <td>8.000000</td>
+      <td>2210.000000</td>
+      <td>1997.000000</td>
+      <td>0.000000</td>
+      <td>98118.000000</td>
+      <td>47.678000</td>
+      <td>-122.125000</td>
+      <td>2360.000000</td>
+      <td>10083.000000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>9.900000e+09</td>
+      <td>7.700000e+06</td>
+      <td>33.000000</td>
+      <td>8.000000</td>
+      <td>13540.000000</td>
+      <td>1.651359e+06</td>
+      <td>3.500000</td>
+      <td>1.000000</td>
+      <td>4.000000</td>
+      <td>5.000000</td>
+      <td>13.000000</td>
+      <td>9410.000000</td>
+      <td>2015.000000</td>
+      <td>2015.000000</td>
+      <td>98199.000000</td>
+      <td>47.777600</td>
+      <td>-121.315000</td>
+      <td>6210.000000</td>
+      <td>871200.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### Scrubbing the Data
+
+#### Cleaning null values and placeholders
+
+
+```python
+df = df.drop("id", axis=1)
+df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>grade</th>
+      <th>sqft_above</th>
+      <th>sqft_basement</th>
+      <th>yr_built</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10/13/2014</td>
+      <td>221900.0</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>1180</td>
+      <td>5650</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>7</td>
+      <td>1180</td>
+      <td>0.0</td>
+      <td>1955</td>
+      <td>0.0</td>
+      <td>98178</td>
+      <td>47.5112</td>
+      <td>-122.257</td>
+      <td>1340</td>
+      <td>5650</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>12/9/2014</td>
+      <td>538000.0</td>
+      <td>3</td>
+      <td>2.25</td>
+      <td>2570</td>
+      <td>7242</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>7</td>
+      <td>2170</td>
+      <td>400.0</td>
+      <td>1951</td>
+      <td>1991.0</td>
+      <td>98125</td>
+      <td>47.7210</td>
+      <td>-122.319</td>
+      <td>1690</td>
+      <td>7639</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2/25/2015</td>
+      <td>180000.0</td>
+      <td>2</td>
+      <td>1.00</td>
+      <td>770</td>
+      <td>10000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>6</td>
+      <td>770</td>
+      <td>0.0</td>
+      <td>1933</td>
+      <td>NaN</td>
+      <td>98028</td>
+      <td>47.7379</td>
+      <td>-122.233</td>
+      <td>2720</td>
+      <td>8062</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12/9/2014</td>
+      <td>604000.0</td>
+      <td>4</td>
+      <td>3.00</td>
+      <td>1960</td>
+      <td>5000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>7</td>
+      <td>1050</td>
+      <td>910.0</td>
+      <td>1965</td>
+      <td>0.0</td>
+      <td>98136</td>
+      <td>47.5208</td>
+      <td>-122.393</td>
+      <td>1360</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2/18/2015</td>
+      <td>510000.0</td>
+      <td>3</td>
+      <td>2.00</td>
+      <td>1680</td>
+      <td>8080</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>8</td>
+      <td>1680</td>
+      <td>0.0</td>
+      <td>1987</td>
+      <td>0.0</td>
+      <td>98074</td>
+      <td>47.6168</td>
+      <td>-122.045</td>
+      <td>1800</td>
+      <td>7503</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# counts null values in each column
+# so sqft_basement has no null values
+# but it definitely contains strings
+df.isna().sum()
+```
+
+
+
+
+    date                0
+    price               0
+    bedrooms            0
+    bathrooms           0
+    sqft_living         0
+    sqft_lot            0
+    floors              0
+    waterfront       2376
+    view               63
+    condition           0
+    grade               0
+    sqft_above          0
+    sqft_basement       0
+    yr_built            0
+    yr_renovated     3842
+    zipcode             0
+    lat                 0
+    long                0
+    sqft_living15       0
+    sqft_lot15          0
+    dtype: int64
+
+
+
+
+```python
+# let's run value_counts on df.sqft_basement
+
+df.sqft_basement.value_counts()[:5]
+```
+
+
+
+
+    0.0      12826
+    ?          454
+    600.0      217
+    500.0      209
+    700.0      208
+    Name: sqft_basement, dtype: int64
+
+
+
+
+```python
+# how can i handle these question marks to get the median and mean
+
+# changing all the values to numerical strings
+df.loc[df["sqft_basement"]=="?", ['sqft_basement']]='-1.0'
+
+df["sqft_basement"].value_counts()
+
+df["sqft_basement"] = df["sqft_basement"].astype(float).astype(int)
+
+df.head()
+```
+
+    /Users/rcarrasco/anaconda3/lib/python3.7/site-packages/pandas/core/ops.py:1649: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+      result = method(y)
+
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>grade</th>
+      <th>sqft_above</th>
+      <th>sqft_basement</th>
+      <th>yr_built</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10/13/2014</td>
+      <td>221900.0</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>1180</td>
+      <td>5650</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>7</td>
+      <td>1180</td>
+      <td>0</td>
+      <td>1955</td>
+      <td>0.0</td>
+      <td>98178</td>
+      <td>47.5112</td>
+      <td>-122.257</td>
+      <td>1340</td>
+      <td>5650</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>12/9/2014</td>
+      <td>538000.0</td>
+      <td>3</td>
+      <td>2.25</td>
+      <td>2570</td>
+      <td>7242</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>7</td>
+      <td>2170</td>
+      <td>400</td>
+      <td>1951</td>
+      <td>1991.0</td>
+      <td>98125</td>
+      <td>47.7210</td>
+      <td>-122.319</td>
+      <td>1690</td>
+      <td>7639</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2/25/2015</td>
+      <td>180000.0</td>
+      <td>2</td>
+      <td>1.00</td>
+      <td>770</td>
+      <td>10000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>6</td>
+      <td>770</td>
+      <td>0</td>
+      <td>1933</td>
+      <td>NaN</td>
+      <td>98028</td>
+      <td>47.7379</td>
+      <td>-122.233</td>
+      <td>2720</td>
+      <td>8062</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12/9/2014</td>
+      <td>604000.0</td>
+      <td>4</td>
+      <td>3.00</td>
+      <td>1960</td>
+      <td>5000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>7</td>
+      <td>1050</td>
+      <td>910</td>
+      <td>1965</td>
+      <td>0.0</td>
+      <td>98136</td>
+      <td>47.5208</td>
+      <td>-122.393</td>
+      <td>1360</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2/18/2015</td>
+      <td>510000.0</td>
+      <td>3</td>
+      <td>2.00</td>
+      <td>1680</td>
+      <td>8080</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>8</td>
+      <td>1680</td>
+      <td>0</td>
+      <td>1987</td>
+      <td>0.0</td>
+      <td>98074</td>
+      <td>47.6168</td>
+      <td>-122.045</td>
+      <td>1800</td>
+      <td>7503</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.describe()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>grade</th>
+      <th>sqft_above</th>
+      <th>sqft_basement</th>
+      <th>yr_built</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>2.159700e+04</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>2.159700e+04</td>
+      <td>21597.000000</td>
+      <td>19221.000000</td>
+      <td>21534.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>17755.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>5.402966e+05</td>
+      <td>3.373200</td>
+      <td>2.115826</td>
+      <td>2080.321850</td>
+      <td>1.509941e+04</td>
+      <td>1.494096</td>
+      <td>0.007596</td>
+      <td>0.233863</td>
+      <td>3.409825</td>
+      <td>7.657915</td>
+      <td>1788.596842</td>
+      <td>285.695560</td>
+      <td>1970.999676</td>
+      <td>83.636778</td>
+      <td>98077.951845</td>
+      <td>47.560093</td>
+      <td>-122.213982</td>
+      <td>1986.620318</td>
+      <td>12758.283512</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>3.673681e+05</td>
+      <td>0.926299</td>
+      <td>0.768984</td>
+      <td>918.106125</td>
+      <td>4.141264e+04</td>
+      <td>0.539683</td>
+      <td>0.086825</td>
+      <td>0.765686</td>
+      <td>0.650546</td>
+      <td>1.173200</td>
+      <td>827.759761</td>
+      <td>439.833509</td>
+      <td>29.375234</td>
+      <td>399.946414</td>
+      <td>53.513072</td>
+      <td>0.138552</td>
+      <td>0.140724</td>
+      <td>685.230472</td>
+      <td>27274.441950</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>7.800000e+04</td>
+      <td>1.000000</td>
+      <td>0.500000</td>
+      <td>370.000000</td>
+      <td>5.200000e+02</td>
+      <td>1.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+      <td>3.000000</td>
+      <td>370.000000</td>
+      <td>-1.000000</td>
+      <td>1900.000000</td>
+      <td>0.000000</td>
+      <td>98001.000000</td>
+      <td>47.155900</td>
+      <td>-122.519000</td>
+      <td>399.000000</td>
+      <td>651.000000</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>3.220000e+05</td>
+      <td>3.000000</td>
+      <td>1.750000</td>
+      <td>1430.000000</td>
+      <td>5.040000e+03</td>
+      <td>1.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>3.000000</td>
+      <td>7.000000</td>
+      <td>1190.000000</td>
+      <td>0.000000</td>
+      <td>1951.000000</td>
+      <td>0.000000</td>
+      <td>98033.000000</td>
+      <td>47.471100</td>
+      <td>-122.328000</td>
+      <td>1490.000000</td>
+      <td>5100.000000</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>4.500000e+05</td>
+      <td>3.000000</td>
+      <td>2.250000</td>
+      <td>1910.000000</td>
+      <td>7.618000e+03</td>
+      <td>1.500000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>3.000000</td>
+      <td>7.000000</td>
+      <td>1560.000000</td>
+      <td>0.000000</td>
+      <td>1975.000000</td>
+      <td>0.000000</td>
+      <td>98065.000000</td>
+      <td>47.571800</td>
+      <td>-122.231000</td>
+      <td>1840.000000</td>
+      <td>7620.000000</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>6.450000e+05</td>
+      <td>4.000000</td>
+      <td>2.500000</td>
+      <td>2550.000000</td>
+      <td>1.068500e+04</td>
+      <td>2.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>4.000000</td>
+      <td>8.000000</td>
+      <td>2210.000000</td>
+      <td>550.000000</td>
+      <td>1997.000000</td>
+      <td>0.000000</td>
+      <td>98118.000000</td>
+      <td>47.678000</td>
+      <td>-122.125000</td>
+      <td>2360.000000</td>
+      <td>10083.000000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>7.700000e+06</td>
+      <td>33.000000</td>
+      <td>8.000000</td>
+      <td>13540.000000</td>
+      <td>1.651359e+06</td>
+      <td>3.500000</td>
+      <td>1.000000</td>
+      <td>4.000000</td>
+      <td>5.000000</td>
+      <td>13.000000</td>
+      <td>9410.000000</td>
+      <td>4820.000000</td>
+      <td>2015.000000</td>
+      <td>2015.000000</td>
+      <td>98199.000000</td>
+      <td>47.777600</td>
+      <td>-121.315000</td>
+      <td>6210.000000</td>
+      <td>871200.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+sqft_basement_mean = df.loc[df.sqft_basement!=-1, ['sqft_basement']].mean()
+sqft_basement_med = df.loc[df.sqft_basement!=-1, ['sqft_basement']].median()
+sqft_basement_mean, sqft_basement_med
+```
+
+
+
+
+    (sqft_basement    291.851724
+     dtype: float64, sqft_basement    0.0
+     dtype: float64)
+
+
+
+
+```python
+df["sqft_basement"].replace(to_replace=-1, value=0, inplace=True)
+
+df.describe()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>grade</th>
+      <th>sqft_above</th>
+      <th>sqft_basement</th>
+      <th>yr_built</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>2.159700e+04</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>2.159700e+04</td>
+      <td>21597.000000</td>
+      <td>19221.000000</td>
+      <td>21534.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>17755.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>5.402966e+05</td>
+      <td>3.373200</td>
+      <td>2.115826</td>
+      <td>2080.321850</td>
+      <td>1.509941e+04</td>
+      <td>1.494096</td>
+      <td>0.007596</td>
+      <td>0.233863</td>
+      <td>3.409825</td>
+      <td>7.657915</td>
+      <td>1788.596842</td>
+      <td>285.716581</td>
+      <td>1970.999676</td>
+      <td>83.636778</td>
+      <td>98077.951845</td>
+      <td>47.560093</td>
+      <td>-122.213982</td>
+      <td>1986.620318</td>
+      <td>12758.283512</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>3.673681e+05</td>
+      <td>0.926299</td>
+      <td>0.768984</td>
+      <td>918.106125</td>
+      <td>4.141264e+04</td>
+      <td>0.539683</td>
+      <td>0.086825</td>
+      <td>0.765686</td>
+      <td>0.650546</td>
+      <td>1.173200</td>
+      <td>827.759761</td>
+      <td>439.819830</td>
+      <td>29.375234</td>
+      <td>399.946414</td>
+      <td>53.513072</td>
+      <td>0.138552</td>
+      <td>0.140724</td>
+      <td>685.230472</td>
+      <td>27274.441950</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>7.800000e+04</td>
+      <td>1.000000</td>
+      <td>0.500000</td>
+      <td>370.000000</td>
+      <td>5.200000e+02</td>
+      <td>1.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>1.000000</td>
+      <td>3.000000</td>
+      <td>370.000000</td>
+      <td>0.000000</td>
+      <td>1900.000000</td>
+      <td>0.000000</td>
+      <td>98001.000000</td>
+      <td>47.155900</td>
+      <td>-122.519000</td>
+      <td>399.000000</td>
+      <td>651.000000</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>3.220000e+05</td>
+      <td>3.000000</td>
+      <td>1.750000</td>
+      <td>1430.000000</td>
+      <td>5.040000e+03</td>
+      <td>1.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>3.000000</td>
+      <td>7.000000</td>
+      <td>1190.000000</td>
+      <td>0.000000</td>
+      <td>1951.000000</td>
+      <td>0.000000</td>
+      <td>98033.000000</td>
+      <td>47.471100</td>
+      <td>-122.328000</td>
+      <td>1490.000000</td>
+      <td>5100.000000</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>4.500000e+05</td>
+      <td>3.000000</td>
+      <td>2.250000</td>
+      <td>1910.000000</td>
+      <td>7.618000e+03</td>
+      <td>1.500000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>3.000000</td>
+      <td>7.000000</td>
+      <td>1560.000000</td>
+      <td>0.000000</td>
+      <td>1975.000000</td>
+      <td>0.000000</td>
+      <td>98065.000000</td>
+      <td>47.571800</td>
+      <td>-122.231000</td>
+      <td>1840.000000</td>
+      <td>7620.000000</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>6.450000e+05</td>
+      <td>4.000000</td>
+      <td>2.500000</td>
+      <td>2550.000000</td>
+      <td>1.068500e+04</td>
+      <td>2.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>4.000000</td>
+      <td>8.000000</td>
+      <td>2210.000000</td>
+      <td>550.000000</td>
+      <td>1997.000000</td>
+      <td>0.000000</td>
+      <td>98118.000000</td>
+      <td>47.678000</td>
+      <td>-122.125000</td>
+      <td>2360.000000</td>
+      <td>10083.000000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>7.700000e+06</td>
+      <td>33.000000</td>
+      <td>8.000000</td>
+      <td>13540.000000</td>
+      <td>1.651359e+06</td>
+      <td>3.500000</td>
+      <td>1.000000</td>
+      <td>4.000000</td>
+      <td>5.000000</td>
+      <td>13.000000</td>
+      <td>9410.000000</td>
+      <td>4820.000000</td>
+      <td>2015.000000</td>
+      <td>2015.000000</td>
+      <td>98199.000000</td>
+      <td>47.777600</td>
+      <td>-121.315000</td>
+      <td>6210.000000</td>
+      <td>871200.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### Data Condition
+
+#### binning values, playing with null values, normalizing data, standardizing data
+#### manipulating data to fit OLS assumptions
+#### Grouping data to create categories that might make sense for your data
+
+
+#### example, let's bin some of our data
+
+
+```python
+plt.hist(df.floors)
+plt.show()
+
+display(df.floors.value_counts())
+```
+
+
+![png](student_files/student_23_0.png)
+
+
+
+    1.0    10673
+    2.0     8235
+    1.5     1910
+    3.0      611
+    2.5      161
+    3.5        7
+    Name: floors, dtype: int64
+
+
+
+```python
+# let's make it categorial for greater than 1 floor
+# 1.0 -> 1
+# 2.0, 3.0, 4.0, 5.0 -> 0
+
+df["only_one_floor"] = df["floors"].apply(check_only_one_floor)
+```
+
+
+```python
+df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>...</th>
+      <th>sqft_above</th>
+      <th>sqft_basement</th>
+      <th>yr_built</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+      <th>only_one_floor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10/13/2014</td>
+      <td>221900.0</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>1180</td>
+      <td>5650</td>
+      <td>1.0</td>
+      <td>NaN</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>1180</td>
+      <td>0</td>
+      <td>1955</td>
+      <td>0.0</td>
+      <td>98178</td>
+      <td>47.5112</td>
+      <td>-122.257</td>
+      <td>1340</td>
+      <td>5650</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>12/9/2014</td>
+      <td>538000.0</td>
+      <td>3</td>
+      <td>2.25</td>
+      <td>2570</td>
+      <td>7242</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>2170</td>
+      <td>400</td>
+      <td>1951</td>
+      <td>1991.0</td>
+      <td>98125</td>
+      <td>47.7210</td>
+      <td>-122.319</td>
+      <td>1690</td>
+      <td>7639</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2/25/2015</td>
+      <td>180000.0</td>
+      <td>2</td>
+      <td>1.00</td>
+      <td>770</td>
+      <td>10000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>770</td>
+      <td>0</td>
+      <td>1933</td>
+      <td>NaN</td>
+      <td>98028</td>
+      <td>47.7379</td>
+      <td>-122.233</td>
+      <td>2720</td>
+      <td>8062</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12/9/2014</td>
+      <td>604000.0</td>
+      <td>4</td>
+      <td>3.00</td>
+      <td>1960</td>
+      <td>5000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>...</td>
+      <td>1050</td>
+      <td>910</td>
+      <td>1965</td>
+      <td>0.0</td>
+      <td>98136</td>
+      <td>47.5208</td>
+      <td>-122.393</td>
+      <td>1360</td>
+      <td>5000</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2/18/2015</td>
+      <td>510000.0</td>
+      <td>3</td>
+      <td>2.00</td>
+      <td>1680</td>
+      <td>8080</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>1680</td>
+      <td>0</td>
+      <td>1987</td>
+      <td>0.0</td>
+      <td>98074</td>
+      <td>47.6168</td>
+      <td>-122.045</td>
+      <td>1800</td>
+      <td>7503</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 21 columns</p>
+</div>
+
+
+
+
+```python
+plt.hist(df.only_one_floor)
+plt.show()
+```
+
+
+![png](student_files/student_26_0.png)
+
+
+
+```python
+
+```
+
+
+![png](student_files/student_27_0.png)
+
+
+### Exploration (Analysis)
+
+
+```python
+plt.figure(figsize=(10, 10))
+sns.violinplot(x='floors', y='price', data=df)
+plt.show()
+```
+
+
+![png](student_files/student_29_0.png)
+
+
+**Violin Plot Summary**
+- The means across the group are very similar
+- They have a similar distribution across the board
+- 2.5 floors has the highest prices and the largest range
+- 3.5 floors has negative prices...
+
+### Modeling / Cross Validation
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+### Interpret
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
+
+
+```python
+
+```

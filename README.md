@@ -15,6 +15,11 @@ import numpy as np
 import pandas as pd
 
 import scipy.stats as scs
+import statsmodels.api as sm
+
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import StratifiedKFold
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -222,13 +227,19 @@ df.head()
 
 
 ```python
+# fill nans with 0s this makes the most sense
+df.fillna(value=0, inplace=True)
+```
+
+
+```python
 df.shape
 ```
 
 
 
 
-    (21597, 20)
+    (21597, 21)
 
 
 
@@ -742,10 +753,6 @@ df["sqft_basement"] = df["sqft_basement"].astype(float).astype(int)
 
 df.head()
 ```
-
-    /Users/rcarrasco/anaconda3/lib/python3.7/site-packages/pandas/core/ops.py:1649: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
-      result = method(y)
-
 
 
 
@@ -1408,7 +1415,7 @@ display(df.floors.value_counts())
 ```
 
 
-![png](student_files/student_23_0.png)
+![png](student_files/student_24_0.png)
 
 
 
@@ -1614,15 +1621,6 @@ plt.show()
 ```
 
 
-![png](student_files/student_26_0.png)
-
-
-
-```python
-
-```
-
-
 ![png](student_files/student_27_0.png)
 
 
@@ -1645,8 +1643,1361 @@ plt.show()
 - 2.5 floors has the highest prices and the largest range
 - 3.5 floors has negative prices...
 
+
+```python
+### Confusion Matrix and Correlation Heatmap
+pd.plotting.scatter_matrix(df, figsize=(20, 20))
+plt.show()
+```
+
+
+![png](student_files/student_31_0.png)
+
+
+
+```python
+def make_heatmap(df=df, columns=None, figsize=(20, 20)):
+    if columns is None:
+        corr = df.corr()
+    else:
+        corr = df[columns].corr()
+
+    plt.figure(figsize=figsize)
+    sns.heatmap(np.abs(corr), cmap=sns.color_palette('Blues'), annot=True, fmt='0.2g')
+    plt.show()
+
+make_heatmap()
+```
+
+
+![png](student_files/student_32_0.png)
+
+
 ### Modeling / Cross Validation
 
+### let's start with some features for our model building
+- keep everything in the same cell, so you can make it a function, easily
+- make sure you use variable names for everything so you can easily make it into a function
+
+
+```python
+def make_ols_model(df=df, target='price', columns_to_use=None, add_constant=True):
+    
+    # just build a model and see the output
+
+    X = df[columns_to_use]
+    y = df[target]
+
+    # add a constant to my X
+    if add_constant:
+        X = sm.add_constant(X)
+    
+    ols = sm.OLS(y, X)
+    results = ols.fit()
+    print(results.summary())
+    return ols, results
+```
+
+
+```python
+# experiment 1 - use everything somewhat correlated to price
+columns = ['sqft_living15', 'lat', 'sqft_above', 'grade', 'view', 'sqft_living', 'bathrooms', 'bedrooms']
+ols = make_ols_model(columns_to_use=columns)
+```
+
+                                OLS Regression Results                            
+    ==============================================================================
+    Dep. Variable:                  price   R-squared:                       0.639
+    Model:                            OLS   Adj. R-squared:                  0.639
+    Method:                 Least Squares   F-statistic:                     4783.
+    Date:                Tue, 24 Sep 2019   Prob (F-statistic):               0.00
+    Time:                        13:49:04   Log-Likelihood:            -2.9638e+05
+    No. Observations:               21597   AIC:                         5.928e+05
+    Df Residuals:                   21588   BIC:                         5.928e+05
+    Df Model:                           8                                         
+    Covariance Type:            nonrobust                                         
+    =================================================================================
+                        coef    std err          t      P>|t|      [0.025      0.975]
+    ---------------------------------------------------------------------------------
+    const         -3.181e+07   5.24e+05    -60.678      0.000   -3.28e+07   -3.08e+07
+    sqft_living15     4.2253      3.614      1.169      0.242      -2.859      11.310
+    lat            6.608e+05   1.11e+04     59.771      0.000    6.39e+05    6.83e+05
+    sqft_above      -11.8291      4.106     -2.881      0.004     -19.878      -3.780
+    grade          7.874e+04   2260.281     34.837      0.000    7.43e+04    8.32e+04
+    view           9.382e+04   2122.629     44.200      0.000    8.97e+04     9.8e+04
+    sqft_living     208.7275      4.368     47.781      0.000     200.165     217.290
+    bathrooms     -1.317e+04   3118.563     -4.222      0.000   -1.93e+04   -7055.295
+    bedrooms      -2.834e+04   2060.725    -13.752      0.000   -3.24e+04   -2.43e+04
+    ==============================================================================
+    Omnibus:                    18870.324   Durbin-Watson:                   1.993
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):          1749172.499
+    Skew:                           3.768   Prob(JB):                         0.00
+    Kurtosis:                      46.440   Cond. No.                     1.27e+06
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+    [2] The condition number is large, 1.27e+06. This might indicate that there are
+    strong multicollinearity or other numerical problems.
+
+
+    /Users/rcarrasco/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py:2389: FutureWarning: Method .ptp is deprecated and will be removed in a future version. Use numpy.ptp instead.
+      return ptp(axis=axis, out=out, **kwargs)
+
+
+### Experiment 1 Summary
+- 1 pvalue is greater than 0.05
+- High condition number -> multicollinearity
+- Not really worth investigating other aspects. Need to handle MC first. 
+
+
+```python
+# dropping sqft_above and sqft_living15 since sqft_living has the highest coefficient
+# sqft_living, bathrooms and bedrooms all are correlated
+
+# how do we address this multicollinearity? 
+```
+
+
+```python
+# let's do some feature engineering!!!!
+
+df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>...</th>
+      <th>sqft_above</th>
+      <th>sqft_basement</th>
+      <th>yr_built</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+      <th>only_one_floor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10/13/2014</td>
+      <td>221900.0</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>1180</td>
+      <td>5650</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>1180</td>
+      <td>0</td>
+      <td>1955</td>
+      <td>0.0</td>
+      <td>98178</td>
+      <td>47.5112</td>
+      <td>-122.257</td>
+      <td>1340</td>
+      <td>5650</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>12/9/2014</td>
+      <td>538000.0</td>
+      <td>3</td>
+      <td>2.25</td>
+      <td>2570</td>
+      <td>7242</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>2170</td>
+      <td>400</td>
+      <td>1951</td>
+      <td>1991.0</td>
+      <td>98125</td>
+      <td>47.7210</td>
+      <td>-122.319</td>
+      <td>1690</td>
+      <td>7639</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2/25/2015</td>
+      <td>180000.0</td>
+      <td>2</td>
+      <td>1.00</td>
+      <td>770</td>
+      <td>10000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>770</td>
+      <td>0</td>
+      <td>1933</td>
+      <td>0.0</td>
+      <td>98028</td>
+      <td>47.7379</td>
+      <td>-122.233</td>
+      <td>2720</td>
+      <td>8062</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12/9/2014</td>
+      <td>604000.0</td>
+      <td>4</td>
+      <td>3.00</td>
+      <td>1960</td>
+      <td>5000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>...</td>
+      <td>1050</td>
+      <td>910</td>
+      <td>1965</td>
+      <td>0.0</td>
+      <td>98136</td>
+      <td>47.5208</td>
+      <td>-122.393</td>
+      <td>1360</td>
+      <td>5000</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2/18/2015</td>
+      <td>510000.0</td>
+      <td>3</td>
+      <td>2.00</td>
+      <td>1680</td>
+      <td>8080</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>1680</td>
+      <td>0</td>
+      <td>1987</td>
+      <td>0.0</td>
+      <td>98074</td>
+      <td>47.6168</td>
+      <td>-122.045</td>
+      <td>1800</td>
+      <td>7503</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 21 columns</p>
+</div>
+
+
+
+
+```python
+df["total_rooms"] = df["bedrooms"] + df["bathrooms"]
+df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>...</th>
+      <th>sqft_basement</th>
+      <th>yr_built</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+      <th>only_one_floor</th>
+      <th>total_rooms</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10/13/2014</td>
+      <td>221900.0</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>1180</td>
+      <td>5650</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>0</td>
+      <td>1955</td>
+      <td>0.0</td>
+      <td>98178</td>
+      <td>47.5112</td>
+      <td>-122.257</td>
+      <td>1340</td>
+      <td>5650</td>
+      <td>1</td>
+      <td>4.00</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>12/9/2014</td>
+      <td>538000.0</td>
+      <td>3</td>
+      <td>2.25</td>
+      <td>2570</td>
+      <td>7242</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>400</td>
+      <td>1951</td>
+      <td>1991.0</td>
+      <td>98125</td>
+      <td>47.7210</td>
+      <td>-122.319</td>
+      <td>1690</td>
+      <td>7639</td>
+      <td>0</td>
+      <td>5.25</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2/25/2015</td>
+      <td>180000.0</td>
+      <td>2</td>
+      <td>1.00</td>
+      <td>770</td>
+      <td>10000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>0</td>
+      <td>1933</td>
+      <td>0.0</td>
+      <td>98028</td>
+      <td>47.7379</td>
+      <td>-122.233</td>
+      <td>2720</td>
+      <td>8062</td>
+      <td>1</td>
+      <td>3.00</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12/9/2014</td>
+      <td>604000.0</td>
+      <td>4</td>
+      <td>3.00</td>
+      <td>1960</td>
+      <td>5000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>...</td>
+      <td>910</td>
+      <td>1965</td>
+      <td>0.0</td>
+      <td>98136</td>
+      <td>47.5208</td>
+      <td>-122.393</td>
+      <td>1360</td>
+      <td>5000</td>
+      <td>1</td>
+      <td>7.00</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2/18/2015</td>
+      <td>510000.0</td>
+      <td>3</td>
+      <td>2.00</td>
+      <td>1680</td>
+      <td>8080</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>0</td>
+      <td>1987</td>
+      <td>0.0</td>
+      <td>98074</td>
+      <td>47.6168</td>
+      <td>-122.045</td>
+      <td>1800</td>
+      <td>7503</td>
+      <td>1</td>
+      <td>5.00</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 22 columns</p>
+</div>
+
+
+
+
+```python
+# Experiment 2
+columns = ['lat', 'grade', 'view', 'sqft_living', 'total_rooms']
+ols = make_ols_model(columns_to_use=columns)
+```
+
+                                OLS Regression Results                            
+    ==============================================================================
+    Dep. Variable:                  price   R-squared:                       0.639
+    Model:                            OLS   Adj. R-squared:                  0.639
+    Method:                 Least Squares   F-statistic:                     7642.
+    Date:                Tue, 24 Sep 2019   Prob (F-statistic):               0.00
+    Time:                        13:57:00   Log-Likelihood:            -2.9639e+05
+    No. Observations:               21597   AIC:                         5.928e+05
+    Df Residuals:                   21591   BIC:                         5.928e+05
+    Df Model:                           5                                         
+    Covariance Type:            nonrobust                                         
+    ===============================================================================
+                      coef    std err          t      P>|t|      [0.025      0.975]
+    -------------------------------------------------------------------------------
+    const       -3.198e+07   5.19e+05    -61.570      0.000    -3.3e+07    -3.1e+07
+    lat          6.643e+05   1.09e+04     60.693      0.000    6.43e+05    6.86e+05
+    grade        7.987e+04   1996.427     40.006      0.000     7.6e+04    8.38e+04
+    view         9.543e+04   2062.703     46.265      0.000    9.14e+04    9.95e+04
+    sqft_living   203.6388      3.229     63.069      0.000     197.310     209.968
+    total_rooms -2.322e+04   1564.487    -14.843      0.000   -2.63e+04   -2.02e+04
+    ==============================================================================
+    Omnibus:                    18870.293   Durbin-Watson:                   1.994
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):          1750759.677
+    Skew:                           3.767   Prob(JB):                         0.00
+    Kurtosis:                      46.460   Cond. No.                     7.87e+05
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+    [2] The condition number is large, 7.87e+05. This might indicate that there are
+    strong multicollinearity or other numerical problems.
+
+
+    /Users/rcarrasco/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py:2389: FutureWarning: Method .ptp is deprecated and will be removed in a future version. Use numpy.ptp instead.
+      return ptp(axis=axis, out=out, **kwargs)
+
+
+### Experiment 2 Summary 
+- Still high multicollinearity
+- Need to adress lat/grade and view after I adress sqft_living and total_roms
+
+
+```python
+# let's make a feature that combines the rooms and sqft_living
+
+df["sqft_living_per_room"]  = df["sqft_living"] / (1.0 * df["total_rooms"])
+
+df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>...</th>
+      <th>yr_built</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+      <th>only_one_floor</th>
+      <th>total_rooms</th>
+      <th>sqft_living_per_room</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10/13/2014</td>
+      <td>221900.0</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>1180</td>
+      <td>5650</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>1955</td>
+      <td>0.0</td>
+      <td>98178</td>
+      <td>47.5112</td>
+      <td>-122.257</td>
+      <td>1340</td>
+      <td>5650</td>
+      <td>1</td>
+      <td>4.00</td>
+      <td>295.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>12/9/2014</td>
+      <td>538000.0</td>
+      <td>3</td>
+      <td>2.25</td>
+      <td>2570</td>
+      <td>7242</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>1951</td>
+      <td>1991.0</td>
+      <td>98125</td>
+      <td>47.7210</td>
+      <td>-122.319</td>
+      <td>1690</td>
+      <td>7639</td>
+      <td>0</td>
+      <td>5.25</td>
+      <td>489.523810</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2/25/2015</td>
+      <td>180000.0</td>
+      <td>2</td>
+      <td>1.00</td>
+      <td>770</td>
+      <td>10000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>1933</td>
+      <td>0.0</td>
+      <td>98028</td>
+      <td>47.7379</td>
+      <td>-122.233</td>
+      <td>2720</td>
+      <td>8062</td>
+      <td>1</td>
+      <td>3.00</td>
+      <td>256.666667</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12/9/2014</td>
+      <td>604000.0</td>
+      <td>4</td>
+      <td>3.00</td>
+      <td>1960</td>
+      <td>5000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>...</td>
+      <td>1965</td>
+      <td>0.0</td>
+      <td>98136</td>
+      <td>47.5208</td>
+      <td>-122.393</td>
+      <td>1360</td>
+      <td>5000</td>
+      <td>1</td>
+      <td>7.00</td>
+      <td>280.000000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2/18/2015</td>
+      <td>510000.0</td>
+      <td>3</td>
+      <td>2.00</td>
+      <td>1680</td>
+      <td>8080</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>1987</td>
+      <td>0.0</td>
+      <td>98074</td>
+      <td>47.6168</td>
+      <td>-122.045</td>
+      <td>1800</td>
+      <td>7503</td>
+      <td>1</td>
+      <td>5.00</td>
+      <td>336.000000</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 23 columns</p>
+</div>
+
+
+
+
+```python
+columns = ['lat', 'grade', 'view', 'sqft_living_per_room']
+ols = make_ols_model(columns_to_use=columns)
+```
+
+                                OLS Regression Results                            
+    ==============================================================================
+    Dep. Variable:                  price   R-squared:                       0.585
+    Model:                            OLS   Adj. R-squared:                  0.585
+    Method:                 Least Squares   F-statistic:                     7602.
+    Date:                Tue, 24 Sep 2019   Prob (F-statistic):               0.00
+    Time:                        13:57:44   Log-Likelihood:            -2.9790e+05
+    No. Observations:               21597   AIC:                         5.958e+05
+    Df Residuals:                   21592   BIC:                         5.958e+05
+    Df Model:                           4                                         
+    Covariance Type:            nonrobust                                         
+    ========================================================================================
+                               coef    std err          t      P>|t|      [0.025      0.975]
+    ----------------------------------------------------------------------------------------
+    const                -3.084e+07   5.56e+05    -55.499      0.000   -3.19e+07   -2.97e+07
+    lat                   6.301e+05   1.17e+04     53.824      0.000    6.07e+05    6.53e+05
+    grade                 1.448e+05   1726.866     83.879      0.000    1.41e+05    1.48e+05
+    view                  1.052e+05   2206.777     47.684      0.000    1.01e+05     1.1e+05
+    sqft_living_per_room   739.0877     19.692     37.532      0.000     700.489     777.686
+    ==============================================================================
+    Omnibus:                    21682.562   Durbin-Watson:                   1.993
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):          3412756.355
+    Skew:                           4.584   Prob(JB):                         0.00
+    Kurtosis:                      63.897   Cond. No.                     1.34e+05
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+    [2] The condition number is large, 1.34e+05. This might indicate that there are
+    strong multicollinearity or other numerical problems.
+
+
+### Experiment 3 Summary
+- Wowzers, this model has high multicollinearity
+- R2 went down by over 10 pts 
+
+
+```python
+# Experiment 4
+columns = ['lat', 'grade', 'view', 'bedrooms', 'bathrooms']
+ols = make_ols_model(columns_to_use=columns)
+```
+
+                                OLS Regression Results                            
+    ==============================================================================
+    Dep. Variable:                  price   R-squared:                       0.574
+    Model:                            OLS   Adj. R-squared:                  0.574
+    Method:                 Least Squares   F-statistic:                     5822.
+    Date:                Tue, 24 Sep 2019   Prob (F-statistic):               0.00
+    Time:                        14:00:24   Log-Likelihood:            -2.9817e+05
+    No. Observations:               21597   AIC:                         5.964e+05
+    Df Residuals:                   21591   BIC:                         5.964e+05
+    Df Model:                           5                                         
+    Covariance Type:            nonrobust                                         
+    ==============================================================================
+                     coef    std err          t      P>|t|      [0.025      0.975]
+    ------------------------------------------------------------------------------
+    const      -3.223e+07   5.64e+05    -57.130      0.000   -3.33e+07   -3.11e+07
+    lat         6.604e+05   1.19e+04     55.545      0.000    6.37e+05    6.84e+05
+    grade       1.474e+05   1909.316     77.178      0.000    1.44e+05    1.51e+05
+    view        1.181e+05   2205.117     53.546      0.000    1.14e+05    1.22e+05
+    bedrooms    2.237e+04   2056.110     10.881      0.000    1.83e+04    2.64e+04
+    bathrooms   6.296e+04   3105.101     20.275      0.000    5.69e+04     6.9e+04
+    ==============================================================================
+    Omnibus:                    21433.513   Durbin-Watson:                   1.977
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):          3140068.842
+    Skew:                           4.517   Prob(JB):                         0.00
+    Kurtosis:                      61.377   Cond. No.                     1.67e+04
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+    [2] The condition number is large, 1.67e+04. This might indicate that there are
+    strong multicollinearity or other numerical problems.
+
+
+### Experiment 4 Summary
+- need to start some statistical investigation to chop at these features
+
+
+```python
+columns = ['price', 'lat', 'grade', 'view', 'bedrooms', 'bathrooms', 'sqft_living', 'total_rooms', 'sqft_living_per_room', 'log_sqft_living']
+make_heatmap(df=df, columns=columns, figsize=(10, 10))
+```
+
+
+![png](student_files/student_48_0.png)
+
+
+
+```python
+def make_histogram(df=df, column='price'):
+    plt.figure(figsize=(8, 5))
+    plt.hist(df[column], bins=20)
+    plt.title(column)
+    plt.show()
+```
+
+
+```python
+make_histogram(df=df, column='lat')
+make_histogram(df=df, column='grade')
+make_histogram(df=df, column='sqft_living')
+```
+
+
+![png](student_files/student_50_0.png)
+
+
+
+![png](student_files/student_50_1.png)
+
+
+
+![png](student_files/student_50_2.png)
+
+
+
+```python
+df['log_sqft_living'] = np.log(df["sqft_living"])
+```
+
+
+```python
+# this looks way more normal! 
+make_histogram(df=df, column='log_sqft_living')
+```
+
+
+![png](student_files/student_52_0.png)
+
+
+
+```python
+# log transforming latitude didn't seem to help much
+df["log_lat"] = np.log(df["lat"])
+make_histogram(df=df, column='log_lat')
+```
+
+
+![png](student_files/student_53_0.png)
+
+
+
+```python
+# Experiment 5
+columns = ['log_sqft_living', 'grade', 'lat']
+ols, results = make_ols_model(columns_to_use=columns, add_constant=False)
+```
+
+                                     OLS Regression Results                                
+    =======================================================================================
+    Dep. Variable:                  price   R-squared (uncentered):                   0.832
+    Model:                            OLS   Adj. R-squared (uncentered):              0.831
+    Method:                 Least Squares   F-statistic:                          3.553e+04
+    Date:                Tue, 24 Sep 2019   Prob (F-statistic):                        0.00
+    Time:                        14:18:44   Log-Likelihood:                     -3.0059e+05
+    No. Observations:               21597   AIC:                                  6.012e+05
+    Df Residuals:                   21594   BIC:                                  6.012e+05
+    Df Model:                           3                                                  
+    Covariance Type:            nonrobust                                                  
+    ===================================================================================
+                          coef    std err          t      P>|t|      [0.025      0.975]
+    -----------------------------------------------------------------------------------
+    log_sqft_living   2.03e+05   6394.031     31.743      0.000     1.9e+05    2.15e+05
+    grade            1.537e+05   2314.914     66.395      0.000    1.49e+05    1.58e+05
+    lat             -4.561e+04    781.899    -58.326      0.000   -4.71e+04   -4.41e+04
+    ==============================================================================
+    Omnibus:                    19984.635   Durbin-Watson:                   1.971
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):          2118529.368
+    Skew:                           4.107   Prob(JB):                         0.00
+    Kurtosis:                      50.820   Cond. No.                         178.
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+
+### Finally, a model that looks good
+- investigate the pvalues
+    - look good
+- investigate multicollinearity
+    - looks good
+- investigate residuals
+    - normality
+    - homoskedacicity
+
+
+```python
+def make_residual_plots(residuals):
+    # create xvalues for residual plot
+    x = np.linspace(0, 1, residuals.shape[0])
+    
+    # plot residuals
+    plt.figure(figsize=(8, 5))
+    plt.scatter(x, residuals, alpha=0.7, c='purple')
+    plt.title("Residuals")
+    plt.hlines(y=0, colors='r', xmin=0, xmax=1, linewidth=3)
+    plt.show()
+    
+    
+    plt.figure(figsize=(8, 5))
+    plt.hist(residuals, bins=20, color='purple')
+    plt.title("Residuals Histogram")
+    plt.show()
+```
+
+
+```python
+residuals = results.resid
+
+make_residual_plots(residuals=residuals)
+```
+
+
+![png](student_files/student_57_0.png)
+
+
+
+```python
+indices_to_drop = np.where(residuals>1000000)[0]
+```
+
+
+```python
+indices_to_drop
+```
+
+
+
+
+    array([   21,   246,   269,   282,   300,   312,   518,   656,   779,
+             814,  1030,  1150,  1162,  1270,  1280,  1313,  1359,  1431,
+            1446,  1674,  1768,  1943,  2038,  2083,  2138,  2265,  2442,
+            2471,  2624,  2862,  2897,  2972,  3018,  3037,  3089,  3278,
+            3381,  3731,  3744,  3809,  3857,  3867,  3910,  4009,  4028,
+            4031,  4145,  4186,  4264,  4335,  4407,  4631,  4758,  4855,
+            4917,  4918,  5444,  5584,  5612,  5697,  5874,  5961,  6039,
+            6189,  6396,  6502,  6708,  6765,  6777,  7028,  7184,  7245,
+            7304,  7306,  7425,  7499,  7645,  7900,  7926,  7982,  8042,
+            8085,  8184,  8215,  8629,  9166,  9245,  9313,  9478, 10252,
+           10362, 10435, 10454, 10457, 11213, 11245, 11266, 11434, 11523,
+           11608, 11674, 11940, 11963, 12174, 12358, 12447, 12636, 12638,
+           12700, 12813, 12859, 13007, 13058, 13243, 13515, 13662, 13697,
+           13954, 14017, 14039, 14070, 14126, 14172, 14241, 14372, 14499,
+           14536, 14542, 14605, 14808, 15008, 15025, 15138, 15166, 15232,
+           15241, 15244, 15363, 15401, 15468, 15498, 15539, 15618, 15665,
+           15814, 15878, 16110, 16244, 16288, 16600, 16803, 16811, 16930,
+           16955, 16987, 17137, 17314, 17544, 17753, 17885, 18185, 18194,
+           18212, 18288, 18314, 18394, 18440, 18462, 18467, 18541, 18753,
+           18778, 18867, 18897, 19002, 19133, 19221, 19308, 19468, 19668,
+           19761, 19807, 19842, 19994, 20080, 20138, 20279, 20309, 20310,
+           20425, 20444, 20519, 20648, 20751, 21024, 21185, 21294, 21352,
+           21514, 21560])
+
+
+
+
+```python
+df_trimmed = df.drop(index=indices_to_drop)
+df_trimmed.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>...</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+      <th>only_one_floor</th>
+      <th>total_rooms</th>
+      <th>sqft_living_per_room</th>
+      <th>log_sqft_living</th>
+      <th>log_lat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10/13/2014</td>
+      <td>221900.0</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>1180</td>
+      <td>5650</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>98178</td>
+      <td>47.5112</td>
+      <td>-122.257</td>
+      <td>1340</td>
+      <td>5650</td>
+      <td>1</td>
+      <td>4.00</td>
+      <td>295.000000</td>
+      <td>7.073270</td>
+      <td>3.860965</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>12/9/2014</td>
+      <td>538000.0</td>
+      <td>3</td>
+      <td>2.25</td>
+      <td>2570</td>
+      <td>7242</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>98125</td>
+      <td>47.7210</td>
+      <td>-122.319</td>
+      <td>1690</td>
+      <td>7639</td>
+      <td>0</td>
+      <td>5.25</td>
+      <td>489.523810</td>
+      <td>7.851661</td>
+      <td>3.865372</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2/25/2015</td>
+      <td>180000.0</td>
+      <td>2</td>
+      <td>1.00</td>
+      <td>770</td>
+      <td>10000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>98028</td>
+      <td>47.7379</td>
+      <td>-122.233</td>
+      <td>2720</td>
+      <td>8062</td>
+      <td>1</td>
+      <td>3.00</td>
+      <td>256.666667</td>
+      <td>6.646391</td>
+      <td>3.865726</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>12/9/2014</td>
+      <td>604000.0</td>
+      <td>4</td>
+      <td>3.00</td>
+      <td>1960</td>
+      <td>5000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>...</td>
+      <td>98136</td>
+      <td>47.5208</td>
+      <td>-122.393</td>
+      <td>1360</td>
+      <td>5000</td>
+      <td>1</td>
+      <td>7.00</td>
+      <td>280.000000</td>
+      <td>7.580700</td>
+      <td>3.861168</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2/18/2015</td>
+      <td>510000.0</td>
+      <td>3</td>
+      <td>2.00</td>
+      <td>1680</td>
+      <td>8080</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>98074</td>
+      <td>47.6168</td>
+      <td>-122.045</td>
+      <td>1800</td>
+      <td>7503</td>
+      <td>1</td>
+      <td>5.00</td>
+      <td>336.000000</td>
+      <td>7.426549</td>
+      <td>3.863186</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 25 columns</p>
+</div>
+
+
+
+### let's rerun the experiment from above after removing outlier residuals
+
+
+```python
+# experiment 6
+columns = ['log_sqft_living', 'grade', 'lat']
+ols, results = make_ols_model(df=df_trimmed, columns_to_use=columns, add_constant=False)
+```
+
+                                     OLS Regression Results                                
+    =======================================================================================
+    Dep. Variable:                  price   R-squared (uncentered):                   0.882
+    Model:                            OLS   Adj. R-squared (uncentered):              0.882
+    Method:                 Least Squares   F-statistic:                          5.330e+04
+    Date:                Tue, 24 Sep 2019   Prob (F-statistic):                        0.00
+    Time:                        14:25:49   Log-Likelihood:                     -2.9201e+05
+    No. Observations:               21397   AIC:                                  5.840e+05
+    Df Residuals:                   21394   BIC:                                  5.840e+05
+    Df Model:                           3                                                  
+    Covariance Type:            nonrobust                                                  
+    ===================================================================================
+                          coef    std err          t      P>|t|      [0.025      0.975]
+    -----------------------------------------------------------------------------------
+    log_sqft_living  1.707e+05   4899.597     34.837      0.000    1.61e+05     1.8e+05
+    grade            1.287e+05   1788.945     71.961      0.000    1.25e+05    1.32e+05
+    lat             -3.679e+04    601.597    -61.161      0.000    -3.8e+04   -3.56e+04
+    ==============================================================================
+    Omnibus:                     5220.069   Durbin-Watson:                   1.960
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):            15648.030
+    Skew:                           1.264   Prob(JB):                         0.00
+    Kurtosis:                       6.341   Cond. No.                         178.
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+
+
+```python
+residuals = results.resid
+
+make_residual_plots(residuals=residuals)
+```
+
+
+![png](student_files/student_63_0.png)
+
+
+
+```python
+for col in ['log_sqft_living', 'grade', 'lat']:
+    make_histogram(df=df_trimmed, column=col)
+```
+
+
+![png](student_files/student_64_0.png)
+
+
+
+![png](student_files/student_64_1.png)
+
+
+
+![png](student_files/student_64_2.png)
+
+
+
+```python
+sm.qqplot(df_trimmed["lat"], fit=True, line='s')
+```
+
+
+
+
+![png](student_files/student_65_0.png)
+
+
+
+
+![png](student_files/student_65_1.png)
+
+
+### let's transform our lat data to try and make it more normal
+
+
+```python
+lat_boxcox, lam = scs.boxcox(df_trimmed["lat"])
+```
+
+
+```python
+sm.qqplot(lat_boxcox, fit=True, line='s')
+```
+
+
+
+
+![png](student_files/student_68_0.png)
+
+
+
+
+![png](student_files/student_68_1.png)
+
+
+
+```python
+df_trimmed["lat_boxcox"] = lat_boxcox
+```
+
+
+```python
+ols, res = make_ols_model(df_trimmed, columns_to_use=['log_sqft_living', 'grade', 'lat'], add_constant=False)
+```
+
+                                     OLS Regression Results                                
+    =======================================================================================
+    Dep. Variable:                  price   R-squared (uncentered):                   0.882
+    Model:                            OLS   Adj. R-squared (uncentered):              0.882
+    Method:                 Least Squares   F-statistic:                          5.330e+04
+    Date:                Tue, 24 Sep 2019   Prob (F-statistic):                        0.00
+    Time:                        14:37:20   Log-Likelihood:                     -2.9201e+05
+    No. Observations:               21397   AIC:                                  5.840e+05
+    Df Residuals:                   21394   BIC:                                  5.840e+05
+    Df Model:                           3                                                  
+    Covariance Type:            nonrobust                                                  
+    ===================================================================================
+                          coef    std err          t      P>|t|      [0.025      0.975]
+    -----------------------------------------------------------------------------------
+    log_sqft_living  1.707e+05   4899.597     34.837      0.000    1.61e+05     1.8e+05
+    grade            1.287e+05   1788.945     71.961      0.000    1.25e+05    1.32e+05
+    lat             -3.679e+04    601.597    -61.161      0.000    -3.8e+04   -3.56e+04
+    ==============================================================================
+    Omnibus:                     5220.069   Durbin-Watson:                   1.960
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):            15648.030
+    Skew:                           1.264   Prob(JB):                         0.00
+    Kurtosis:                       6.341   Cond. No.                         178.
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+
+
+```python
+make_histogram(df=df_trimmed, column='lat_boxcox')
+```
+
+
+![png](student_files/student_71_0.png)
+
+
+
+```python
+df_trimmed["lat_changed"] = df_trimmed["lat"] - df_trimmed.lat.min()
+```
+
+
+```python
+ols, res = make_ols_model(df=df_trimmed, columns_to_use=['lat_changed', 'log_sqft_living', 'grade'], add_constant=False)
+
+
+```
+
+                                     OLS Regression Results                                
+    =======================================================================================
+    Dep. Variable:                  price   R-squared (uncentered):                   0.875
+    Model:                            OLS   Adj. R-squared (uncentered):              0.875
+    Method:                 Least Squares   F-statistic:                          5.004e+04
+    Date:                Tue, 24 Sep 2019   Prob (F-statistic):                        0.00
+    Time:                        14:40:01   Log-Likelihood:                     -2.9260e+05
+    No. Observations:               21397   AIC:                                  5.852e+05
+    Df Residuals:                   21394   BIC:                                  5.852e+05
+    Df Model:                           3                                                  
+    Covariance Type:            nonrobust                                                  
+    ===================================================================================
+                          coef    std err          t      P>|t|      [0.025      0.975]
+    -----------------------------------------------------------------------------------
+    lat_changed      5.018e+05   1.03e+04     48.850      0.000    4.82e+05    5.22e+05
+    log_sqft_living  -1.35e+05   1728.932    -78.056      0.000   -1.38e+05   -1.32e+05
+    grade            1.756e+05   1631.224    107.638      0.000    1.72e+05    1.79e+05
+    ==============================================================================
+    Omnibus:                     7236.676   Durbin-Watson:                   1.960
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):            29531.866
+    Skew:                           1.640   Prob(JB):                         0.00
+    Kurtosis:                       7.729   Cond. No.                         77.2
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+
+
+```python
+make_residual_plots(res.resid)
+```
+
+
+![png](student_files/student_74_0.png)
+
+
+
+![png](student_files/student_74_1.png)
+
+
+### What did you learn?
+- Keep trying and trying
+- Learn from experiments to adjust the next one for improvement
+- define functions
+- find the colinear variables using models and heatmaps
+- general flow for modeling OLS
+- interpreting residuals
+
 
 ```python
 
@@ -1657,15 +3008,7 @@ plt.show()
 
 ```
 
-
-```python
-
-```
-
-
-```python
-
-```
+# let's keep these features and try and transform them as much as possible
 
 ### Interpret
 
@@ -1683,6 +3026,21 @@ plt.show()
 ```python
 
 ```
+
+### Command to convert your notebook to a README.md
+
+```jupyter nbconvert --to markdown student.ipynb```
+
+then 
+
+
+```mv README.md README_old.md```
+
+
+then finally
+
+```mv student.md README.md```
+
 
 
 ```python

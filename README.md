@@ -9,6 +9,11 @@ Please fill out:
 * Blog post URL:
 
 
+### Outline
+
+* [Hexbin](#Hexbin)
+* [Scrubbing Data](#Scrubbing-the-Data)
+
 
 ```python
 import numpy as np
@@ -48,15 +53,32 @@ def check_only_one_floor(val):
 df = pd.read_csv("kc_house_data.csv")
 ```
 
+### Hexbin
+
+
+```python
+hexbin = df.plot.hexbin(x='long', y='lat', C='price', figsize=(20, 20))
+```
+
+
+![png](student_files/student_9_0.png)
+
+
+
+```python
+fig = hexbin.get_figure()
+```
+
+
+```python
+fig.savefig('hexbin.png')
+```
+
 
 ```python
 df.head()
 ```
 
-
-### Hexbin Plot
-
-![](hexbin.png)
 
 
 
@@ -103,7 +125,7 @@ df.head()
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
+      <td>0</td>
       <td>7129300520</td>
       <td>10/13/2014</td>
       <td>221900.0</td>
@@ -127,7 +149,7 @@ df.head()
       <td>5650</td>
     </tr>
     <tr>
-      <th>1</th>
+      <td>1</td>
       <td>6414100192</td>
       <td>12/9/2014</td>
       <td>538000.0</td>
@@ -151,7 +173,7 @@ df.head()
       <td>7639</td>
     </tr>
     <tr>
-      <th>2</th>
+      <td>2</td>
       <td>5631500400</td>
       <td>2/25/2015</td>
       <td>180000.0</td>
@@ -175,7 +197,7 @@ df.head()
       <td>8062</td>
     </tr>
     <tr>
-      <th>3</th>
+      <td>3</td>
       <td>2487200875</td>
       <td>12/9/2014</td>
       <td>604000.0</td>
@@ -199,7 +221,7 @@ df.head()
       <td>5000</td>
     </tr>
     <tr>
-      <th>4</th>
+      <td>4</td>
       <td>1954400510</td>
       <td>2/18/2015</td>
       <td>510000.0</td>
@@ -266,14 +288,14 @@ df.info()
     sqft_living      21597 non-null int64
     sqft_lot         21597 non-null int64
     floors           21597 non-null float64
-    waterfront       19221 non-null float64
-    view             21534 non-null float64
+    waterfront       21597 non-null float64
+    view             21597 non-null float64
     condition        21597 non-null int64
     grade            21597 non-null int64
     sqft_above       21597 non-null int64
     sqft_basement    21597 non-null object
     yr_built         21597 non-null int64
-    yr_renovated     17755 non-null float64
+    yr_renovated     21597 non-null float64
     zipcode          21597 non-null int64
     lat              21597 non-null float64
     long             21597 non-null float64
@@ -334,7 +356,7 @@ df.describe()
   </thead>
   <tbody>
     <tr>
-      <th>count</th>
+      <td>count</td>
       <td>2.159700e+04</td>
       <td>2.159700e+04</td>
       <td>21597.000000</td>
@@ -342,13 +364,13 @@ df.describe()
       <td>21597.000000</td>
       <td>2.159700e+04</td>
       <td>21597.000000</td>
-      <td>19221.000000</td>
-      <td>21534.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
-      <td>17755.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
@@ -356,7 +378,7 @@ df.describe()
       <td>21597.000000</td>
     </tr>
     <tr>
-      <th>mean</th>
+      <td>mean</td>
       <td>4.580474e+09</td>
       <td>5.402966e+05</td>
       <td>3.373200</td>
@@ -364,13 +386,13 @@ df.describe()
       <td>2080.321850</td>
       <td>1.509941e+04</td>
       <td>1.494096</td>
-      <td>0.007596</td>
-      <td>0.233863</td>
+      <td>0.006760</td>
+      <td>0.233181</td>
       <td>3.409825</td>
       <td>7.657915</td>
       <td>1788.596842</td>
       <td>1970.999676</td>
-      <td>83.636778</td>
+      <td>68.758207</td>
       <td>98077.951845</td>
       <td>47.560093</td>
       <td>-122.213982</td>
@@ -378,7 +400,7 @@ df.describe()
       <td>12758.283512</td>
     </tr>
     <tr>
-      <th>std</th>
+      <td>std</td>
       <td>2.876736e+09</td>
       <td>3.673681e+05</td>
       <td>0.926299</td>
@@ -386,13 +408,13 @@ df.describe()
       <td>918.106125</td>
       <td>4.141264e+04</td>
       <td>0.539683</td>
-      <td>0.086825</td>
-      <td>0.765686</td>
+      <td>0.081944</td>
+      <td>0.764673</td>
       <td>0.650546</td>
       <td>1.173200</td>
       <td>827.759761</td>
       <td>29.375234</td>
-      <td>399.946414</td>
+      <td>364.037499</td>
       <td>53.513072</td>
       <td>0.138552</td>
       <td>0.140724</td>
@@ -400,7 +422,7 @@ df.describe()
       <td>27274.441950</td>
     </tr>
     <tr>
-      <th>min</th>
+      <td>min</td>
       <td>1.000102e+06</td>
       <td>7.800000e+04</td>
       <td>1.000000</td>
@@ -422,7 +444,7 @@ df.describe()
       <td>651.000000</td>
     </tr>
     <tr>
-      <th>25%</th>
+      <td>25%</td>
       <td>2.123049e+09</td>
       <td>3.220000e+05</td>
       <td>3.000000</td>
@@ -444,7 +466,7 @@ df.describe()
       <td>5100.000000</td>
     </tr>
     <tr>
-      <th>50%</th>
+      <td>50%</td>
       <td>3.904930e+09</td>
       <td>4.500000e+05</td>
       <td>3.000000</td>
@@ -466,7 +488,7 @@ df.describe()
       <td>7620.000000</td>
     </tr>
     <tr>
-      <th>75%</th>
+      <td>75%</td>
       <td>7.308900e+09</td>
       <td>6.450000e+05</td>
       <td>4.000000</td>
@@ -488,7 +510,7 @@ df.describe()
       <td>10083.000000</td>
     </tr>
     <tr>
-      <th>max</th>
+      <td>max</td>
       <td>9.900000e+09</td>
       <td>7.700000e+06</td>
       <td>33.000000</td>
@@ -570,7 +592,7 @@ df.head()
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
+      <td>0</td>
       <td>10/13/2014</td>
       <td>221900.0</td>
       <td>3</td>
@@ -578,7 +600,7 @@ df.head()
       <td>1180</td>
       <td>5650</td>
       <td>1.0</td>
-      <td>NaN</td>
+      <td>0.0</td>
       <td>0.0</td>
       <td>3</td>
       <td>7</td>
@@ -593,7 +615,7 @@ df.head()
       <td>5650</td>
     </tr>
     <tr>
-      <th>1</th>
+      <td>1</td>
       <td>12/9/2014</td>
       <td>538000.0</td>
       <td>3</td>
@@ -616,7 +638,7 @@ df.head()
       <td>7639</td>
     </tr>
     <tr>
-      <th>2</th>
+      <td>2</td>
       <td>2/25/2015</td>
       <td>180000.0</td>
       <td>2</td>
@@ -631,7 +653,7 @@ df.head()
       <td>770</td>
       <td>0.0</td>
       <td>1933</td>
-      <td>NaN</td>
+      <td>0.0</td>
       <td>98028</td>
       <td>47.7379</td>
       <td>-122.233</td>
@@ -639,7 +661,7 @@ df.head()
       <td>8062</td>
     </tr>
     <tr>
-      <th>3</th>
+      <td>3</td>
       <td>12/9/2014</td>
       <td>604000.0</td>
       <td>4</td>
@@ -662,7 +684,7 @@ df.head()
       <td>5000</td>
     </tr>
     <tr>
-      <th>4</th>
+      <td>4</td>
       <td>2/18/2015</td>
       <td>510000.0</td>
       <td>3</td>
@@ -701,26 +723,26 @@ df.isna().sum()
 
 
 
-    date                0
-    price               0
-    bedrooms            0
-    bathrooms           0
-    sqft_living         0
-    sqft_lot            0
-    floors              0
-    waterfront       2376
-    view               63
-    condition           0
-    grade               0
-    sqft_above          0
-    sqft_basement       0
-    yr_built            0
-    yr_renovated     3842
-    zipcode             0
-    lat                 0
-    long                0
-    sqft_living15       0
-    sqft_lot15          0
+    date             0
+    price            0
+    bedrooms         0
+    bathrooms        0
+    sqft_living      0
+    sqft_lot         0
+    floors           0
+    waterfront       0
+    view             0
+    condition        0
+    grade            0
+    sqft_above       0
+    sqft_basement    0
+    yr_built         0
+    yr_renovated     0
+    zipcode          0
+    lat              0
+    long             0
+    sqft_living15    0
+    sqft_lot15       0
     dtype: int64
 
 
@@ -803,7 +825,7 @@ df.head()
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
+      <td>0</td>
       <td>10/13/2014</td>
       <td>221900.0</td>
       <td>3</td>
@@ -811,7 +833,7 @@ df.head()
       <td>1180</td>
       <td>5650</td>
       <td>1.0</td>
-      <td>NaN</td>
+      <td>0.0</td>
       <td>0.0</td>
       <td>3</td>
       <td>7</td>
@@ -826,7 +848,7 @@ df.head()
       <td>5650</td>
     </tr>
     <tr>
-      <th>1</th>
+      <td>1</td>
       <td>12/9/2014</td>
       <td>538000.0</td>
       <td>3</td>
@@ -849,7 +871,7 @@ df.head()
       <td>7639</td>
     </tr>
     <tr>
-      <th>2</th>
+      <td>2</td>
       <td>2/25/2015</td>
       <td>180000.0</td>
       <td>2</td>
@@ -864,7 +886,7 @@ df.head()
       <td>770</td>
       <td>0</td>
       <td>1933</td>
-      <td>NaN</td>
+      <td>0.0</td>
       <td>98028</td>
       <td>47.7379</td>
       <td>-122.233</td>
@@ -872,7 +894,7 @@ df.head()
       <td>8062</td>
     </tr>
     <tr>
-      <th>3</th>
+      <td>3</td>
       <td>12/9/2014</td>
       <td>604000.0</td>
       <td>4</td>
@@ -895,7 +917,7 @@ df.head()
       <td>5000</td>
     </tr>
     <tr>
-      <th>4</th>
+      <td>4</td>
       <td>2/18/2015</td>
       <td>510000.0</td>
       <td>3</td>
@@ -972,21 +994,21 @@ df.describe()
   </thead>
   <tbody>
     <tr>
-      <th>count</th>
+      <td>count</td>
       <td>2.159700e+04</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>2.159700e+04</td>
       <td>21597.000000</td>
-      <td>19221.000000</td>
-      <td>21534.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
-      <td>17755.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
@@ -994,21 +1016,21 @@ df.describe()
       <td>21597.000000</td>
     </tr>
     <tr>
-      <th>mean</th>
+      <td>mean</td>
       <td>5.402966e+05</td>
       <td>3.373200</td>
       <td>2.115826</td>
       <td>2080.321850</td>
       <td>1.509941e+04</td>
       <td>1.494096</td>
-      <td>0.007596</td>
-      <td>0.233863</td>
+      <td>0.006760</td>
+      <td>0.233181</td>
       <td>3.409825</td>
       <td>7.657915</td>
       <td>1788.596842</td>
       <td>285.695560</td>
       <td>1970.999676</td>
-      <td>83.636778</td>
+      <td>68.758207</td>
       <td>98077.951845</td>
       <td>47.560093</td>
       <td>-122.213982</td>
@@ -1016,21 +1038,21 @@ df.describe()
       <td>12758.283512</td>
     </tr>
     <tr>
-      <th>std</th>
+      <td>std</td>
       <td>3.673681e+05</td>
       <td>0.926299</td>
       <td>0.768984</td>
       <td>918.106125</td>
       <td>4.141264e+04</td>
       <td>0.539683</td>
-      <td>0.086825</td>
-      <td>0.765686</td>
+      <td>0.081944</td>
+      <td>0.764673</td>
       <td>0.650546</td>
       <td>1.173200</td>
       <td>827.759761</td>
       <td>439.833509</td>
       <td>29.375234</td>
-      <td>399.946414</td>
+      <td>364.037499</td>
       <td>53.513072</td>
       <td>0.138552</td>
       <td>0.140724</td>
@@ -1038,7 +1060,7 @@ df.describe()
       <td>27274.441950</td>
     </tr>
     <tr>
-      <th>min</th>
+      <td>min</td>
       <td>7.800000e+04</td>
       <td>1.000000</td>
       <td>0.500000</td>
@@ -1060,7 +1082,7 @@ df.describe()
       <td>651.000000</td>
     </tr>
     <tr>
-      <th>25%</th>
+      <td>25%</td>
       <td>3.220000e+05</td>
       <td>3.000000</td>
       <td>1.750000</td>
@@ -1082,7 +1104,7 @@ df.describe()
       <td>5100.000000</td>
     </tr>
     <tr>
-      <th>50%</th>
+      <td>50%</td>
       <td>4.500000e+05</td>
       <td>3.000000</td>
       <td>2.250000</td>
@@ -1104,7 +1126,7 @@ df.describe()
       <td>7620.000000</td>
     </tr>
     <tr>
-      <th>75%</th>
+      <td>75%</td>
       <td>6.450000e+05</td>
       <td>4.000000</td>
       <td>2.500000</td>
@@ -1126,7 +1148,7 @@ df.describe()
       <td>10083.000000</td>
     </tr>
     <tr>
-      <th>max</th>
+      <td>max</td>
       <td>7.700000e+06</td>
       <td>33.000000</td>
       <td>8.000000</td>
@@ -1220,21 +1242,21 @@ df.describe()
   </thead>
   <tbody>
     <tr>
-      <th>count</th>
+      <td>count</td>
       <td>2.159700e+04</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>2.159700e+04</td>
       <td>21597.000000</td>
-      <td>19221.000000</td>
-      <td>21534.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
-      <td>17755.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
+      <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
       <td>21597.000000</td>
@@ -1242,21 +1264,21 @@ df.describe()
       <td>21597.000000</td>
     </tr>
     <tr>
-      <th>mean</th>
+      <td>mean</td>
       <td>5.402966e+05</td>
       <td>3.373200</td>
       <td>2.115826</td>
       <td>2080.321850</td>
       <td>1.509941e+04</td>
       <td>1.494096</td>
-      <td>0.007596</td>
-      <td>0.233863</td>
+      <td>0.006760</td>
+      <td>0.233181</td>
       <td>3.409825</td>
       <td>7.657915</td>
       <td>1788.596842</td>
       <td>285.716581</td>
       <td>1970.999676</td>
-      <td>83.636778</td>
+      <td>68.758207</td>
       <td>98077.951845</td>
       <td>47.560093</td>
       <td>-122.213982</td>
@@ -1264,21 +1286,21 @@ df.describe()
       <td>12758.283512</td>
     </tr>
     <tr>
-      <th>std</th>
+      <td>std</td>
       <td>3.673681e+05</td>
       <td>0.926299</td>
       <td>0.768984</td>
       <td>918.106125</td>
       <td>4.141264e+04</td>
       <td>0.539683</td>
-      <td>0.086825</td>
-      <td>0.765686</td>
+      <td>0.081944</td>
+      <td>0.764673</td>
       <td>0.650546</td>
       <td>1.173200</td>
       <td>827.759761</td>
       <td>439.819830</td>
       <td>29.375234</td>
-      <td>399.946414</td>
+      <td>364.037499</td>
       <td>53.513072</td>
       <td>0.138552</td>
       <td>0.140724</td>
@@ -1286,7 +1308,7 @@ df.describe()
       <td>27274.441950</td>
     </tr>
     <tr>
-      <th>min</th>
+      <td>min</td>
       <td>7.800000e+04</td>
       <td>1.000000</td>
       <td>0.500000</td>
@@ -1308,7 +1330,7 @@ df.describe()
       <td>651.000000</td>
     </tr>
     <tr>
-      <th>25%</th>
+      <td>25%</td>
       <td>3.220000e+05</td>
       <td>3.000000</td>
       <td>1.750000</td>
@@ -1330,7 +1352,7 @@ df.describe()
       <td>5100.000000</td>
     </tr>
     <tr>
-      <th>50%</th>
+      <td>50%</td>
       <td>4.500000e+05</td>
       <td>3.000000</td>
       <td>2.250000</td>
@@ -1352,7 +1374,7 @@ df.describe()
       <td>7620.000000</td>
     </tr>
     <tr>
-      <th>75%</th>
+      <td>75%</td>
       <td>6.450000e+05</td>
       <td>4.000000</td>
       <td>2.500000</td>
@@ -1374,7 +1396,7 @@ df.describe()
       <td>10083.000000</td>
     </tr>
     <tr>
-      <th>max</th>
+      <td>max</td>
       <td>7.700000e+06</td>
       <td>33.000000</td>
       <td>8.000000</td>
@@ -1419,7 +1441,7 @@ display(df.floors.value_counts())
 ```
 
 
-![png](student_files/student_24_0.png)
+![png](student_files/student_29_0.png)
 
 
 
@@ -1492,7 +1514,7 @@ df.head()
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
+      <td>0</td>
       <td>10/13/2014</td>
       <td>221900.0</td>
       <td>3</td>
@@ -1500,7 +1522,7 @@ df.head()
       <td>1180</td>
       <td>5650</td>
       <td>1.0</td>
-      <td>NaN</td>
+      <td>0.0</td>
       <td>0.0</td>
       <td>3</td>
       <td>...</td>
@@ -1516,7 +1538,7 @@ df.head()
       <td>1</td>
     </tr>
     <tr>
-      <th>1</th>
+      <td>1</td>
       <td>12/9/2014</td>
       <td>538000.0</td>
       <td>3</td>
@@ -1540,7 +1562,7 @@ df.head()
       <td>0</td>
     </tr>
     <tr>
-      <th>2</th>
+      <td>2</td>
       <td>2/25/2015</td>
       <td>180000.0</td>
       <td>2</td>
@@ -1555,7 +1577,7 @@ df.head()
       <td>770</td>
       <td>0</td>
       <td>1933</td>
-      <td>NaN</td>
+      <td>0.0</td>
       <td>98028</td>
       <td>47.7379</td>
       <td>-122.233</td>
@@ -1564,7 +1586,7 @@ df.head()
       <td>1</td>
     </tr>
     <tr>
-      <th>3</th>
+      <td>3</td>
       <td>12/9/2014</td>
       <td>604000.0</td>
       <td>4</td>
@@ -1588,7 +1610,7 @@ df.head()
       <td>1</td>
     </tr>
     <tr>
-      <th>4</th>
+      <td>4</td>
       <td>2/18/2015</td>
       <td>510000.0</td>
       <td>3</td>
@@ -1625,7 +1647,7 @@ plt.show()
 ```
 
 
-![png](student_files/student_27_0.png)
+![png](student_files/student_32_0.png)
 
 
 ### Exploration (Analysis)
@@ -1638,7 +1660,7 @@ plt.show()
 ```
 
 
-![png](student_files/student_29_0.png)
+![png](student_files/student_34_0.png)
 
 
 **Violin Plot Summary**
@@ -1655,7 +1677,7 @@ plt.show()
 ```
 
 
-![png](student_files/student_31_0.png)
+![png](student_files/student_36_0.png)
 
 
 
@@ -1674,7 +1696,7 @@ make_heatmap()
 ```
 
 
-![png](student_files/student_32_0.png)
+![png](student_files/student_37_0.png)
 
 
 ### Modeling / Cross Validation
@@ -1714,8 +1736,8 @@ ols = make_ols_model(columns_to_use=columns)
     Dep. Variable:                  price   R-squared:                       0.639
     Model:                            OLS   Adj. R-squared:                  0.639
     Method:                 Least Squares   F-statistic:                     4783.
-    Date:                Tue, 24 Sep 2019   Prob (F-statistic):               0.00
-    Time:                        13:49:04   Log-Likelihood:            -2.9638e+05
+    Date:                Thu, 26 Sep 2019   Prob (F-statistic):               0.00
+    Time:                        13:18:19   Log-Likelihood:            -2.9638e+05
     No. Observations:               21597   AIC:                         5.928e+05
     Df Residuals:                   21588   BIC:                         5.928e+05
     Df Model:                           8                                         
@@ -1745,7 +1767,7 @@ ols = make_ols_model(columns_to_use=columns)
     strong multicollinearity or other numerical problems.
 
 
-    /Users/rcarrasco/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py:2389: FutureWarning: Method .ptp is deprecated and will be removed in a future version. Use numpy.ptp instead.
+    /Users/rafael/anaconda3/envs/flatiron-env/lib/python3.6/site-packages/numpy/core/fromnumeric.py:2389: FutureWarning: Method .ptp is deprecated and will be removed in a future version. Use numpy.ptp instead.
       return ptp(axis=axis, out=out, **kwargs)
 
 
@@ -1815,7 +1837,7 @@ df.head()
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
+      <td>0</td>
       <td>10/13/2014</td>
       <td>221900.0</td>
       <td>3</td>
@@ -1839,7 +1861,7 @@ df.head()
       <td>1</td>
     </tr>
     <tr>
-      <th>1</th>
+      <td>1</td>
       <td>12/9/2014</td>
       <td>538000.0</td>
       <td>3</td>
@@ -1863,7 +1885,7 @@ df.head()
       <td>0</td>
     </tr>
     <tr>
-      <th>2</th>
+      <td>2</td>
       <td>2/25/2015</td>
       <td>180000.0</td>
       <td>2</td>
@@ -1887,7 +1909,7 @@ df.head()
       <td>1</td>
     </tr>
     <tr>
-      <th>3</th>
+      <td>3</td>
       <td>12/9/2014</td>
       <td>604000.0</td>
       <td>4</td>
@@ -1911,7 +1933,7 @@ df.head()
       <td>1</td>
     </tr>
     <tr>
-      <th>4</th>
+      <td>4</td>
       <td>2/18/2015</td>
       <td>510000.0</td>
       <td>3</td>
@@ -1993,7 +2015,7 @@ df.head()
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
+      <td>0</td>
       <td>10/13/2014</td>
       <td>221900.0</td>
       <td>3</td>
@@ -2017,7 +2039,7 @@ df.head()
       <td>4.00</td>
     </tr>
     <tr>
-      <th>1</th>
+      <td>1</td>
       <td>12/9/2014</td>
       <td>538000.0</td>
       <td>3</td>
@@ -2041,7 +2063,7 @@ df.head()
       <td>5.25</td>
     </tr>
     <tr>
-      <th>2</th>
+      <td>2</td>
       <td>2/25/2015</td>
       <td>180000.0</td>
       <td>2</td>
@@ -2065,7 +2087,7 @@ df.head()
       <td>3.00</td>
     </tr>
     <tr>
-      <th>3</th>
+      <td>3</td>
       <td>12/9/2014</td>
       <td>604000.0</td>
       <td>4</td>
@@ -2089,7 +2111,7 @@ df.head()
       <td>7.00</td>
     </tr>
     <tr>
-      <th>4</th>
+      <td>4</td>
       <td>2/18/2015</td>
       <td>510000.0</td>
       <td>3</td>
@@ -2131,8 +2153,8 @@ ols = make_ols_model(columns_to_use=columns)
     Dep. Variable:                  price   R-squared:                       0.639
     Model:                            OLS   Adj. R-squared:                  0.639
     Method:                 Least Squares   F-statistic:                     7642.
-    Date:                Tue, 24 Sep 2019   Prob (F-statistic):               0.00
-    Time:                        13:57:00   Log-Likelihood:            -2.9639e+05
+    Date:                Thu, 26 Sep 2019   Prob (F-statistic):               0.00
+    Time:                        13:18:21   Log-Likelihood:            -2.9639e+05
     No. Observations:               21597   AIC:                         5.928e+05
     Df Residuals:                   21591   BIC:                         5.928e+05
     Df Model:                           5                                         
@@ -2157,10 +2179,6 @@ ols = make_ols_model(columns_to_use=columns)
     [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
     [2] The condition number is large, 7.87e+05. This might indicate that there are
     strong multicollinearity or other numerical problems.
-
-
-    /Users/rcarrasco/anaconda3/lib/python3.7/site-packages/numpy/core/fromnumeric.py:2389: FutureWarning: Method .ptp is deprecated and will be removed in a future version. Use numpy.ptp instead.
-      return ptp(axis=axis, out=out, **kwargs)
 
 
 ### Experiment 2 Summary 
@@ -2222,7 +2240,7 @@ df.head()
   </thead>
   <tbody>
     <tr>
-      <th>0</th>
+      <td>0</td>
       <td>10/13/2014</td>
       <td>221900.0</td>
       <td>3</td>
@@ -2246,7 +2264,7 @@ df.head()
       <td>295.000000</td>
     </tr>
     <tr>
-      <th>1</th>
+      <td>1</td>
       <td>12/9/2014</td>
       <td>538000.0</td>
       <td>3</td>
@@ -2270,7 +2288,7 @@ df.head()
       <td>489.523810</td>
     </tr>
     <tr>
-      <th>2</th>
+      <td>2</td>
       <td>2/25/2015</td>
       <td>180000.0</td>
       <td>2</td>
@@ -2294,7 +2312,7 @@ df.head()
       <td>256.666667</td>
     </tr>
     <tr>
-      <th>3</th>
+      <td>3</td>
       <td>12/9/2014</td>
       <td>604000.0</td>
       <td>4</td>
@@ -2318,7 +2336,7 @@ df.head()
       <td>280.000000</td>
     </tr>
     <tr>
-      <th>4</th>
+      <td>4</td>
       <td>2/18/2015</td>
       <td>510000.0</td>
       <td>3</td>
@@ -2359,8 +2377,8 @@ ols = make_ols_model(columns_to_use=columns)
     Dep. Variable:                  price   R-squared:                       0.585
     Model:                            OLS   Adj. R-squared:                  0.585
     Method:                 Least Squares   F-statistic:                     7602.
-    Date:                Tue, 24 Sep 2019   Prob (F-statistic):               0.00
-    Time:                        13:57:44   Log-Likelihood:            -2.9790e+05
+    Date:                Thu, 26 Sep 2019   Prob (F-statistic):               0.00
+    Time:                        13:18:22   Log-Likelihood:            -2.9790e+05
     No. Observations:               21597   AIC:                         5.958e+05
     Df Residuals:                   21592   BIC:                         5.958e+05
     Df Model:                           4                                         
@@ -2402,8 +2420,8 @@ ols = make_ols_model(columns_to_use=columns)
     Dep. Variable:                  price   R-squared:                       0.574
     Model:                            OLS   Adj. R-squared:                  0.574
     Method:                 Least Squares   F-statistic:                     5822.
-    Date:                Tue, 24 Sep 2019   Prob (F-statistic):               0.00
-    Time:                        14:00:24   Log-Likelihood:            -2.9817e+05
+    Date:                Thu, 26 Sep 2019   Prob (F-statistic):               0.00
+    Time:                        13:18:24   Log-Likelihood:            -2.9817e+05
     No. Observations:               21597   AIC:                         5.964e+05
     Df Residuals:                   21591   BIC:                         5.964e+05
     Df Model:                           5                                         
@@ -2440,7 +2458,56 @@ make_heatmap(df=df, columns=columns, figsize=(10, 10))
 ```
 
 
-![png](student_files/student_48_0.png)
+    -------------------------------------------------
+
+    KeyError        Traceback (most recent call last)
+
+    <ipython-input-42-f36f5ab66115> in <module>
+          1 columns = ['price', 'lat', 'grade', 'view', 'bedrooms', 'bathrooms', 'sqft_living', 'total_rooms', 'sqft_living_per_room', 'log_sqft_living']
+    ----> 2 make_heatmap(df=df, columns=columns, figsize=(10, 10))
+    
+
+    <ipython-input-31-3dcd4badf0fe> in make_heatmap(df, columns, figsize)
+          3         corr = df.corr()
+          4     else:
+    ----> 5         corr = df[columns].corr()
+          6 
+          7     plt.figure(figsize=figsize)
+
+
+    ~/anaconda3/envs/flatiron-env/lib/python3.6/site-packages/pandas/core/frame.py in __getitem__(self, key)
+       2984             if is_iterator(key):
+       2985                 key = list(key)
+    -> 2986             indexer = self.loc._convert_to_indexer(key, axis=1, raise_missing=True)
+       2987 
+       2988         # take() does not accept boolean indexers
+
+
+    ~/anaconda3/envs/flatiron-env/lib/python3.6/site-packages/pandas/core/indexing.py in _convert_to_indexer(self, obj, axis, is_setter, raise_missing)
+       1283                 # When setting, missing keys are not allowed, even with .loc:
+       1284                 kwargs = {"raise_missing": True if is_setter else raise_missing}
+    -> 1285                 return self._get_listlike_indexer(obj, axis, **kwargs)[1]
+       1286         else:
+       1287             try:
+
+
+    ~/anaconda3/envs/flatiron-env/lib/python3.6/site-packages/pandas/core/indexing.py in _get_listlike_indexer(self, key, axis, raise_missing)
+       1090 
+       1091         self._validate_read_indexer(
+    -> 1092             keyarr, indexer, o._get_axis_number(axis), raise_missing=raise_missing
+       1093         )
+       1094         return keyarr, indexer
+
+
+    ~/anaconda3/envs/flatiron-env/lib/python3.6/site-packages/pandas/core/indexing.py in _validate_read_indexer(self, key, indexer, axis, raise_missing)
+       1183             if not (self.name == "loc" and not raise_missing):
+       1184                 not_found = list(set(key) - set(ax))
+    -> 1185                 raise KeyError("{} not in index".format(not_found))
+       1186 
+       1187             # we skip the warning on Categorical/Interval
+
+
+    KeyError: "['log_sqft_living'] not in index"
 
 
 
@@ -2460,15 +2527,15 @@ make_histogram(df=df, column='sqft_living')
 ```
 
 
-![png](student_files/student_50_0.png)
+![png](student_files/student_55_0.png)
 
 
 
-![png](student_files/student_50_1.png)
+![png](student_files/student_55_1.png)
 
 
 
-![png](student_files/student_50_2.png)
+![png](student_files/student_55_2.png)
 
 
 
@@ -2483,7 +2550,7 @@ make_histogram(df=df, column='log_sqft_living')
 ```
 
 
-![png](student_files/student_52_0.png)
+![png](student_files/student_57_0.png)
 
 
 
@@ -2494,7 +2561,7 @@ make_histogram(df=df, column='log_lat')
 ```
 
 
-![png](student_files/student_53_0.png)
+![png](student_files/student_58_0.png)
 
 
 
@@ -2569,13 +2636,35 @@ make_residual_plots(residuals=residuals)
 ```
 
 
-![png](student_files/student_57_0.png)
+    -------------------------------------------------
+
+    NameError       Traceback (most recent call last)
+
+    <ipython-input-48-19cad86a7a5b> in <module>
+    ----> 1 residuals = results.resid
+          2 
+          3 make_residual_plots(residuals=residuals)
+
+
+    NameError: name 'results' is not defined
 
 
 
 ```python
 indices_to_drop = np.where(residuals>1000000)[0]
 ```
+
+
+    -------------------------------------------------
+
+    NameError       Traceback (most recent call last)
+
+    <ipython-input-49-cec016b25fa6> in <module>
+    ----> 1 indices_to_drop = np.where(residuals>1000000)[0]
+    
+
+    NameError: name 'residuals' is not defined
+
 
 
 ```python
@@ -2834,7 +2923,7 @@ make_residual_plots(residuals=residuals)
 ```
 
 
-![png](student_files/student_63_0.png)
+![png](student_files/student_68_0.png)
 
 
 
@@ -2844,15 +2933,15 @@ for col in ['log_sqft_living', 'grade', 'lat']:
 ```
 
 
-![png](student_files/student_64_0.png)
+![png](student_files/student_69_0.png)
 
 
 
-![png](student_files/student_64_1.png)
+![png](student_files/student_69_1.png)
 
 
 
-![png](student_files/student_64_2.png)
+![png](student_files/student_69_2.png)
 
 
 
@@ -2863,12 +2952,12 @@ sm.qqplot(df_trimmed["lat"], fit=True, line='s')
 
 
 
-![png](student_files/student_65_0.png)
+![png](student_files/student_70_0.png)
 
 
 
 
-![png](student_files/student_65_1.png)
+![png](student_files/student_70_1.png)
 
 
 ### let's transform our lat data to try and make it more normal
@@ -2886,12 +2975,12 @@ sm.qqplot(lat_boxcox, fit=True, line='s')
 
 
 
-![png](student_files/student_68_0.png)
+![png](student_files/student_73_0.png)
 
 
 
 
-![png](student_files/student_68_1.png)
+![png](student_files/student_73_1.png)
 
 
 
@@ -2938,7 +3027,7 @@ make_histogram(df=df_trimmed, column='lat_boxcox')
 ```
 
 
-![png](student_files/student_71_0.png)
+![png](student_files/student_76_0.png)
 
 
 
@@ -2987,11 +3076,11 @@ make_residual_plots(res.resid)
 ```
 
 
-![png](student_files/student_74_0.png)
+![png](student_files/student_79_0.png)
 
 
 
-![png](student_files/student_74_1.png)
+![png](student_files/student_79_1.png)
 
 
 ### What did you learn?
@@ -3044,6 +3133,333 @@ then
 then finally
 
 ```mv student.md README.md```
+
+
+
+```python
+
+```
+
+
+```python
+df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>price</th>
+      <th>bedrooms</th>
+      <th>bathrooms</th>
+      <th>sqft_living</th>
+      <th>sqft_lot</th>
+      <th>floors</th>
+      <th>waterfront</th>
+      <th>view</th>
+      <th>condition</th>
+      <th>...</th>
+      <th>yr_renovated</th>
+      <th>zipcode</th>
+      <th>lat</th>
+      <th>long</th>
+      <th>sqft_living15</th>
+      <th>sqft_lot15</th>
+      <th>only_one_floor</th>
+      <th>total_rooms</th>
+      <th>sqft_living_per_room</th>
+      <th>log_sqft_living</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>10/13/2014</td>
+      <td>221900.0</td>
+      <td>3</td>
+      <td>1.00</td>
+      <td>1180</td>
+      <td>5650</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>98178</td>
+      <td>47.5112</td>
+      <td>-122.257</td>
+      <td>1340</td>
+      <td>5650</td>
+      <td>1</td>
+      <td>4.00</td>
+      <td>295.000000</td>
+      <td>7.073270</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>12/9/2014</td>
+      <td>538000.0</td>
+      <td>3</td>
+      <td>2.25</td>
+      <td>2570</td>
+      <td>7242</td>
+      <td>2.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>1991.0</td>
+      <td>98125</td>
+      <td>47.7210</td>
+      <td>-122.319</td>
+      <td>1690</td>
+      <td>7639</td>
+      <td>0</td>
+      <td>5.25</td>
+      <td>489.523810</td>
+      <td>7.851661</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2/25/2015</td>
+      <td>180000.0</td>
+      <td>2</td>
+      <td>1.00</td>
+      <td>770</td>
+      <td>10000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>98028</td>
+      <td>47.7379</td>
+      <td>-122.233</td>
+      <td>2720</td>
+      <td>8062</td>
+      <td>1</td>
+      <td>3.00</td>
+      <td>256.666667</td>
+      <td>6.646391</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>12/9/2014</td>
+      <td>604000.0</td>
+      <td>4</td>
+      <td>3.00</td>
+      <td>1960</td>
+      <td>5000</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>98136</td>
+      <td>47.5208</td>
+      <td>-122.393</td>
+      <td>1360</td>
+      <td>5000</td>
+      <td>1</td>
+      <td>7.00</td>
+      <td>280.000000</td>
+      <td>7.580700</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>2/18/2015</td>
+      <td>510000.0</td>
+      <td>3</td>
+      <td>2.00</td>
+      <td>1680</td>
+      <td>8080</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>98074</td>
+      <td>47.6168</td>
+      <td>-122.045</td>
+      <td>1800</td>
+      <td>7503</td>
+      <td>1</td>
+      <td>5.00</td>
+      <td>336.000000</td>
+      <td>7.426549</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 24 columns</p>
+</div>
+
+
+
+
+```python
+
+ols, res = make_ols_model(df, columns_to_use=['sqft_living', 'grade', 'lat'], add_constant=False)
+```
+
+                                     OLS Regression Results                                
+    =======================================================================================
+    Dep. Variable:                  price   R-squared (uncentered):                   0.852
+    Model:                            OLS   Adj. R-squared (uncentered):              0.852
+    Method:                 Least Squares   F-statistic:                          4.149e+04
+    Date:                Thu, 26 Sep 2019   Prob (F-statistic):                        0.00
+    Time:                        13:25:12   Log-Likelihood:                     -2.9918e+05
+    No. Observations:               21597   AIC:                                  5.984e+05
+    Df Residuals:                   21594   BIC:                                  5.984e+05
+    Df Model:                           3                                                  
+    Covariance Type:            nonrobust                                                  
+    ===============================================================================
+                      coef    std err          t      P>|t|      [0.025      0.975]
+    -------------------------------------------------------------------------------
+    sqft_living   185.8734      2.881     64.511      0.000     180.226     191.521
+    grade        9.687e+04   2258.518     42.891      0.000    9.24e+04    1.01e+05
+    lat         -1.236e+04    281.951    -43.844      0.000   -1.29e+04   -1.18e+04
+    ==============================================================================
+    Omnibus:                    16898.089   Durbin-Watson:                   1.976
+    Prob(Omnibus):                  0.000   Jarque-Bera (JB):           988320.054
+    Skew:                           3.289   Prob(JB):                         0.00
+    Kurtosis:                      35.481   Cond. No.                     3.03e+03
+    ==============================================================================
+    
+    Warnings:
+    [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+    [2] The condition number is large, 3.03e+03. This might indicate that there are
+    strong multicollinearity or other numerical problems.
+
+
+### Questions on OLS Summary above
+- Cover aspects of statsmodels ols summary
+    - Condition Number (lower is better)
+    - pvalues
+        - the confidence that your feature is not random
+        - lower is better
+    - [0.025 0.9750]
+        - how much our target changes per unit 
+        - for every 1 sqft of changes our target will change between 180.226 and 191.521 dollars 95% of the time
+    - jarque-bera (lower is better)
+        - a measure of normality (which is measured by skewness and kurtotis)
+        - geometric mean of skewness and kurtosis
+    - skewness score is perfect if = 0
+        - 0 means the data is symmetrical
+    - kurtosis score is perfect if = 0 (Fisher) or 3 (Pearson)
+    - F-Statistic
+        - F-Stat measures our confidence that our features can predict our target linearly
+        - low (less than 0.05) this means that OLS is a valid model linearity
+    - Coefficients
+        - rate that target changes per feature unit change
+
+
+```python
+from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.linear_model import LinearRegression
+```
+
+
+```python
+
+```
+
+
+```python
+X = df[['sqft_living', 'grade', 'lat']]
+y = df["price"]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
+
+
+# instantiate a model
+linreg = LinearRegression(fit_intercept=False)
+
+# fit the model aka find the beta coefficients
+linreg.fit(X_train, y_train)
+
+# score the model
+print(linreg.score(X_test, y_test))
+print(linreg.score(X_train, y_train))
+print(linreg.score(X, y))
+# evaluate the model
+
+print(linreg.coef_)
+```
+
+    0.5436100711570111
+    0.5288497316493155
+    0.5323142378872625
+    [   188.78618552  95911.55772198 -12325.37949115]
+
+
+### let's do some cross validation
+###  saved at the end to ensure that you aren't lying to yourself
+
+
+```python
+# instantiate a model (estimator) (sklearn)
+
+linreg = LinearRegression(fit_intercept=True)
+
+
+# instantitate a cross_val_score object
+
+cv = cross_val_score(linreg, X, y, cv=5, n_jobs=-1, scoring='r2', verbose=2)
+```
+
+    [Parallel(n_jobs=-1)]: Using backend LokyBackend with 8 concurrent workers.
+    [Parallel(n_jobs=-1)]: Done   2 out of   5 | elapsed:    0.0s remaining:    0.1s
+    [Parallel(n_jobs=-1)]: Done   5 out of   5 | elapsed:    0.1s remaining:    0.0s
+    [Parallel(n_jobs=-1)]: Done   5 out of   5 | elapsed:    0.1s finished
+
+
+### Summary of above
+I have some terrible r2 scores above, but they're similar for train/test which means I'm not overfitting. 
+
+
+```python
+cv.mean()
+```
+
+
+
+
+    0.595592898694831
+
+
+
+
+```python
+cv.std()
+```
+
+
+
+
+    0.015144785642707662
+
 
 
 

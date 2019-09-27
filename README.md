@@ -54,6 +54,10 @@ df.head()
 ```
 
 
+### Hexbin Plot
+
+![](hexbin.png)
+
 
 
 <div>
